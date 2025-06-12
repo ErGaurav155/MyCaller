@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Phone, Copy, CheckCircle } from 'lucide-react';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Phone, Copy, CheckCircle } from "lucide-react";
 
 interface PhoneNumberCardProps {
   phoneNumber: string;
   isActive: boolean;
 }
 
-export default function PhoneNumberCard({ phoneNumber, isActive }: PhoneNumberCardProps) {
+export default function PhoneNumberCard({
+  phoneNumber,
+  isActive,
+}: PhoneNumberCardProps) {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = async () => {
@@ -20,7 +23,7 @@ export default function PhoneNumberCard({ phoneNumber, isActive }: PhoneNumberCa
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
 
@@ -30,11 +33,15 @@ export default function PhoneNumberCard({ phoneNumber, isActive }: PhoneNumberCa
         <CardTitle className="flex items-center gap-2">
           <Phone className="h-5 w-5 text-blue-600" />
           Your AI Assistant Number
-          <Badge 
+          <Badge
             variant={isActive ? "default" : "secondary"}
-            className={isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
+            className={
+              isActive
+                ? "bg-green-100 text-green-800"
+                : "bg-gray-100 text-gray-800"
+            }
           >
-            {isActive ? 'Active' : 'Inactive'}
+            {isActive ? "Active" : "Inactive"}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -69,7 +76,7 @@ export default function PhoneNumberCard({ phoneNumber, isActive }: PhoneNumberCa
           <ul className="list-disc list-inside space-y-1 text-xs">
             <li>Customer calls this number</li>
             <li>System tries to connect to you first</li>
-            <li>If you don't answer, AI assistant takes over</li>
+            <li>If you don not answer, AI assistant takes over</li>
             <li>AI collects customer information</li>
             <li>You receive instant notifications</li>
           </ul>
