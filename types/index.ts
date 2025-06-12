@@ -1,10 +1,12 @@
+import { Types } from "mongoose";
+
 export interface Lead {
   _id: string;
   name?: string;
   phone: string;
   email?: string;
   address?: string;
-  businessOwner: string;
+  businessOwner: Types.ObjectId;
   callSid: string;
   status: "pending" | "contacted" | "closed";
   createdAt: Date;
