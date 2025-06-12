@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import connectToDatabase from "@/lib/mongodb";
+import { connectToDatabase } from "@/lib/database/mongoose";
 import Lead from "@/models/Lead";
 import User from "@/models/User";
 import LeadsTable from "@/components/dashboard/LeadsTable";
@@ -35,10 +35,13 @@ async function getLeads() {
     return {
       leads: leads.map((lead) => ({
         ...lead,
-        _id: lead._id.toString(),
+        _id: lead._id as string,
         businessOwner: lead.businessOwner.toString(),
         createdAt: new Date(lead.createdAt),
         updatedAt: new Date(lead.updatedAt),
+        phone: lead.phone || "", // Fallback for required field
+        callSid: lead.callSid || "", // Fallback for required field
+        status: lead.status || "pending", // Fallback for required field
       })),
       user,
     };

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
-import connectToDatabase from "@/lib/mongodb";
+import { connectToDatabase } from "@/lib/database/mongoose";
 import User from "@/models/User";
 import Lead from "@/models/Lead";
 
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       response.hangup();
 
       // Send notification to business owner
-      await sendLeadNotification(user, callSid);
+      await sendLeadNotification(user, callSid!);
     }
 
     return new NextResponse(response.toString(), {

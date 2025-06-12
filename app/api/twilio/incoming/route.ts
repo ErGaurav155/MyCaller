@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
-import connectToDatabase from "@/lib/mongodb";
+import { connectToDatabase } from "@/lib/database/mongoose";
 import User from "@/models/User";
 
 export async function POST(req: NextRequest) {
