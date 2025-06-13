@@ -1,5 +1,5 @@
 {
-  "name": "nextjs",
+  "name": "aicaller",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -51,7 +51,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
     "eslint": "8.49.0",
-    "eslint-config-next": "13.5.1",
+    "eslint-config-next": "^14.1.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.446.0",
     "mongoose": "^8.0.3",
