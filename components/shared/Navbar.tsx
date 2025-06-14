@@ -1,203 +1,120 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Button } from "@/components/ui/button";
-
-import Image from "next/image";
-import Logo from "/public/assets/img/file.png";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SignedIn, SignedOut, useAuth, UserButton } from "@clerk/nextjs";
-import { ArrowRight, Phone } from "lucide-react";
+import React, { useState } from "react";
 
 export function NavBar() {
-  const [openNav, setOpenNav] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeNavItem, setActiveNavItem] = useState("home");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const router = useRouter();
-  const { userId } = useAuth();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Add or remove the rounded style based on scroll position
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 540) {
-        setOpenNav(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const navList = (
-    <ul className="mb-4 mt-2 flex flex-col gap-1 sm:mb-2 sm:mt-2 lg:mb-0  lg:mt-0 md:flex-row items-center justify-evenly sm:gap-1 md:gap-2   text-black w-full ">
-      <li className="flex-auto  p-[1px]">
-        <Link href="/">
-          <Button variant="outline">Home</Button>
-        </Link>
-      </li>
-      <li className="flex-auto  p-[1px]">
-        <Link href="/Feature">
-          <Button variant="outline">Feature</Button>
-        </Link>
-      </li>
-      <li className="flex-auto  p-[1px]">
-        <Link href="/pricing">
-          <Button variant="outline">Pricing</Button>
-        </Link>
-      </li>
-      <li className="flex-auto  p-[1px]">
-        <Link href="/reivew">
-          <Button variant="outline">Review</Button>
-        </Link>
-      </li>
-      <li className="flex-auto  p-[1px]">
-        <Link href="/aboutus">
-          <Button variant="outline">AboutUs</Button>
-        </Link>
-      </li>
-    </ul>
-  );
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+  const handleNavClick = (navItem: string) => {
+    setActiveNavItem(navItem);
+    setIsMenuOpen(false);
+  };
 
   return (
-    <Navbar
-      className={` w-full m-auto sticky top-0 z-10  transition-all duration-300     ${
-        isScrolled ? "rounded-lg shadow-md" : "rounded-none"
-      }`}
-    >
-      <div className=" w-full max-w-7xl m-auto">
-        <div className="flex items-center w-full justify-center text-black">
-          <Link
-            href="/"
-            className="w-1/2   md:w-1/6  cursor-pointer py-1.5 font-bold text-xl"
-          >
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <Phone className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">
-                AI Call Assistant
-              </span>
-            </div>{" "}
-            {/* <Image
-            alt="image"
-            className="flex-1 object-contain "
-            src={Logo}
-            width={250}
-            height={250}
-            priority
-          /> */}
-          </Link>
-          <div className="hidden md:flex   w-1/2  md:w-5/6  items-center gap-3 justify-end ">
-            <div className="  w-9/12  lg:w-8/12">{navList}</div>
-
-            <SignedIn>
-              <Button
-                size="lg"
-                color="white"
-                onClick={() => router.push("/UserDashboard")}
-                className="text-white 
-            w-2/12 py-2 px-1 border text-center  border-white shadow-sm shadow-blue-gray-800"
-              >
-                Dashboard
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-
-              <div className="">
-                <UserButton afterSignOutUrl="/" />
-              </div>
-            </SignedIn>
-            <SignedOut>
-              <Button
-                size="lg"
-                color="white"
-                onClick={() => router.push("/contactUs")}
-                className="text-white 
-              w-2/12 py-2 px-1 border text-center  border-white shadow-sm shadow-blue-gray-800"
-              >
-                ContactUs
-              </Button>
-              <Button
-                size="lg"
-                color="white"
-                onClick={() => router.push("/sign-up")}
-                className="text-white 
-           
-               w-2/12  py-2 px-1 border  bg-blue-700 hover:bg-blue-900  text-center  border-white shadow-sm shadow-blue-gray-800 "
-              >
-                Login
-              </Button>
-            </SignedOut>
-          </div>
-
-          <IconButton
-            variant="text"
-            className="w-6/12 text-black md:hidden "
-            onClick={() => setOpenNav(!openNav)}
-          >
-            {openNav ? (
-              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-            ) : (
-              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-            )}
-          </IconButton>
-        </div>
-        <Collapse open={openNav}>
-          {navList}
-
-          <SignedIn>
-            <div className="flex items-center justify-center gap-2">
-              <Button
-                size="lg"
-                color="white"
-                onClick={() => router.push("/UserDashboard")}
-                className="text-white 
-            w-full py-2 px-1 border text-center  border-white shadow-sm shadow-blue-gray-800"
-              >
-                Dashboard
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <div className="flex items-center justify-center bg-white rounded p-[3px]">
-                <UserButton afterSignOutUrl="/" />
-              </div>
+    <header className="sticky px-5  lg:px-10  top-0 z-50 backdrop-blur-lg bg-black border-b border-[#00F0FF]/20">
+      <div className=" mx-auto px-4 max-w-7xl py-4 flex justify-between gap-2 items-center">
+        {/* Logo */}
+        <div className="flex items-center">
+          <div className="relative w-10 h-10 mr-3">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-pulse"></div>
+            <div className="absolute inset-1 rounded-full bg-[#0A0A0A] flex items-center justify-center">
+              <i className="fas fa-satellite text-[#00F0FF]"></i>
             </div>
-          </SignedIn>
-          <SignedOut>
-            <Button
-              size="lg"
-              color="white"
-              onClick={() => router.push("/contactUs")}
-              className="text-white 
-               py-2 px-1 border text-center w-full border-white shadow-sm shadow-blue-gray-800"
+          </div>
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
+            AiCall<span className="text-[#B026FF]">er</span>
+          </h1>
+        </div>
+        {/* Desktop Orbital Navigation */}
+        <nav className="hidden md:flex justify-evenly items-center space-x-8">
+          {[
+            { id: "features", label: "Features" },
+            { id: "pricing", label: "Pricing" },
+            { id: "reviews", label: "Reviews" },
+            { id: "contact", label: "Contact Us" },
+          ].map((item) => (
+            <Link
+              key={item.id}
+              href={`#${item.id}`}
+              className={`nav-link relative group cursor-pointer ${
+                activeNavItem === item.id ? "text-[#00F0FF]" : "text-white"
+              }`}
+              onClick={() => handleNavClick(item.id)}
             >
-              ContactUs
-            </Button>
-            <Button
-              size="lg"
-              color="white"
-              onClick={() => router.push("/sign-up")}
-              className="text-white 
-              white
-                py-2 mt-1 px-1 border bg-blue-700 hover:bg-blue-900 text-center w-full border-white shadow-sm shadow-blue-gray-800 "
-            >
-              Login
-            </Button>
-          </SignedOut>
-        </Collapse>
+              <span className="hover:text-[#00F0FF] transition-colors">
+                {item.label}
+              </span>
+              <span
+                className={`absolute bottom-0 left-0 h-0.5 bg-[#00F0FF] transition-all duration-300 ${
+                  activeNavItem === item.id
+                    ? "w-full"
+                    : "w-0 group-hover:w-full"
+                }`}
+              ></span>
+            </Link>
+          ))}
+        </nav>
+        {/* Auth & Language Buttons */}
+        <div className="flex items-center space-x-4">
+          {/* Language Selector */}
+          <div className="relative">
+            <button className="flex items-center space-x-1 text-sm text-[#B026FF] hover:text-[#FF2E9F] transition-colors cursor-pointer whitespace-nowrap !rounded-button">
+              <i className="fas fa-globe text-[#00F0FF]"></i>
+              <span>EN</span>
+              <i className="fas fa-chevron-down text-xs"></i>
+            </button>
+          </div>
+          {/* Login Button */}
+          <button className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer">
+            <i className="fas fa-user-astronaut mr-2"></i>
+            Login
+          </button>
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-2xl text-[#00F0FF] cursor-pointer !rounded-button whitespace-nowrap"
+            onClick={toggleMenu}
+          >
+            <i className={`fas ${isMenuOpen ? "fa-times" : "fa-bars"}`}></i>
+          </button>
+        </div>
       </div>
-    </Navbar>
+      {/* Mobile Navigation Menu */}
+      <div
+        className={`md:hidden transition-all duration-300 overflow-hidden ${
+          isMenuOpen ? "max-h-96" : "max-h-0"
+        }`}
+      >
+        <div className="container mx-auto px-4 py-4 flex flex-col space-y-4 bg-[#0A0A0A]/80 backdrop-blur-lg">
+          {[
+            { id: "home", label: "Home" },
+            { id: "assistant", label: "AI Call Assistant" },
+            { id: "features", label: "Features" },
+            { id: "pricing", label: "Pricing" },
+            { id: "reviews", label: "Reviews" },
+            { id: "about", label: "About Us" },
+            { id: "contact", label: "Contact Us" },
+          ].map((item) => (
+            <Link
+              key={item.id}
+              href={`#${item.id}`}
+              className={`text-white hover:text-[#00F0FF] transition-colors cursor-pointer ${
+                activeNavItem === item.id ? "text-[#00F0FF]" : ""
+              }`}
+              onClick={() => handleNavClick(item.id)}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <button className="px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer">
+            <i className="fas fa-user-astronaut mr-2"></i>
+            Login
+          </button>
+        </div>
+      </div>
+    </header>
   );
 }
