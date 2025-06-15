@@ -1,7 +1,8 @@
-import twilio from 'twilio';
+"use server";
+import twilio from "twilio";
 
 if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
-  throw new Error('Twilio credentials are not configured');
+  throw new Error("Twilio credentials are not configured");
 }
 
 export const twilioClient = twilio(

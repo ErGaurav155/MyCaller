@@ -13,12 +13,13 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
-const DEMO_USER_ID = "demo-user-123";
+const DEMO_USER_ID = "684eb625b30670b468652a10";
 
 async function getLeads() {
   try {
-    // await connectToDatabase();
+    await connectToDatabase();
 
     // For demo purposes, create a user if it doesn't exist
     let user;
@@ -236,6 +237,12 @@ async function DashboardContent() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const { userId } = useAuth();
+
+  if (!userId) {
+    router.push("/sign-in");
+  }
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <div className="bg-[#0a0a0a]/80 backdrop-blur-sm border-b border-[#333]">
