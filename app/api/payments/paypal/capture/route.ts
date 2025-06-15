@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { capturePayPalOrder } from "@/lib/paypal";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import User from "@/models/User";
+import User from "@/lib/database/models/user.model";
 
 export async function POST(req: NextRequest) {
   try {

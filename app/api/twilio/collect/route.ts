@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import Lead from "@/models/Lead";
+import Lead from "@/lib/database/models/lead.model";
 import { transcribeAudio } from "@/lib/openai";
 import { twilioClient } from "@/lib/twilio";
 

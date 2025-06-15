@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import Lead from "@/models/Lead";
+import Lead from "@/lib/database/models/lead.model";
 
 export async function GET(req: NextRequest) {
   try {
