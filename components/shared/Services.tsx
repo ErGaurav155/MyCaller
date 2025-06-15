@@ -9,7 +9,7 @@ export function Service() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
             Our Interstellar Services
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono ">
             Choose from our range of AI communication solutions designed for the
             modern space traveler and business entity.
           </p>
@@ -25,7 +25,7 @@ export function Service() {
               <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#00F0FF] transition-colors">
                 Quantum Call Assistant
               </h3>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-400 mb-4 font-mono text-lg">
                 AI-powered call handling with real-time translation across
                 12,000+ galactic languages and dialects.
               </p>
@@ -49,7 +49,7 @@ export function Service() {
               <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#B026FF] transition-colors">
                 Quantum Shuttle Rentals
               </h3>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-400 mb-4 font-mono text-lg">
                 Voice-activated shuttle booking and management with predictive
                 maintenance alerts and route optimization.
               </p>
@@ -73,7 +73,7 @@ export function Service() {
               <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#FF2E9F] transition-colors">
                 Exoplanet Safari Packages
               </h3>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-400 mb-4 font-mono text-lg">
                 Personalized tour guides with environmental adaptation
                 recommendations and local customs briefing.
               </p>

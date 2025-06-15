@@ -29,7 +29,7 @@ export function HeroSection() {
             </span>
             <span className="block text-white">For The Future</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-xl">
+          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-xl font-mono">
             Experience quantum communication across galaxies with our AI
             assistants. Connecting civilizations since 3047, now available for
             your interstellar business needs.

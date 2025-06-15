@@ -9,6 +9,7 @@ import { Testimonial } from "@/components/shared/Testimonial";
 import { ContactUs } from "@/components/shared/ContactUs";
 import { Chatbot } from "@/components/shared/Chatbot";
 import { Footer } from "@/components/shared/Footer";
+import { AboutUs } from "@/components/shared/AboutUs";
 
 export default function HomePage() {
   return (
@@ -26,7 +27,7 @@ export default function HomePage() {
               <h2 className="text-3xl md:text-4xl font-bold text-[#FF2E9F] mb-6">
                 Transform Your Business Communication
               </h2>
-              <p className="text-xl text-gray-100 mb-8">
+              <p className="text-xl text-gray-100 mb-8 font-mono">
                 Stop losing potential customers to missed calls. Our AI
                 assistant ensures every caller gets professional attention, even
                 when you are busy.
@@ -63,7 +64,7 @@ export default function HomePage() {
                   </p>
                 </div>
               </div>
-              <p className="text-gray-300 mb-4 ">
+              <p className="text-gray-300 mb-4 font-mono text-lg">
                 This is your dedicated AI assistant number. Share it with
                 customers or use it in your marketing materials.
               </p>
@@ -72,6 +73,7 @@ export default function HomePage() {
         </div>
       </section>
       <Testimonial />
+      <AboutUs />
       <ContactUs />
       <Chatbot />
       <Footer />

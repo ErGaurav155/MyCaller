@@ -5,10 +5,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import User from "@/lib/database/models/user.model";
 import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
-import { CreateUserParams, UpdateUserParams } from "@/types/index";
+import { UpdateUserType, CreateUserType } from "@/types/index";
 
 // CREATE
-export async function createUser(user: CreateUserParams) {
+export async function createUser(user: CreateUserType) {
   try {
     await connectToDatabase();
     const newUser = await User.create(user);
@@ -70,7 +70,7 @@ export async function updateNumberByDbId(buyerId: string, newNumber: string) {
 }
 
 // UPDATE
-export async function updateUser(clerkId: string, user: UpdateUserParams) {
+export async function updateUser(clerkId: string, user: UpdateUserType) {
   try {
     await connectToDatabase();
 

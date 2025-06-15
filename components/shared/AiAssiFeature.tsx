@@ -10,7 +10,7 @@ export function AiAssiFeature() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
             Our Interstellar AI Call Assistant
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">
             Revolutionize your communication with our advanced AI technology
             designed for seamless interstellar conversations.
           </p>
@@ -30,7 +30,7 @@ export function AiAssiFeature() {
                 <h3 className="text-2xl font-bold mb-3 text-white">
                   Quantum Neural Processing
                 </h3>
-                <p className="text-gray-300 mb-4">
+                <p className="text-gray-300 mb-4 font-mono text-lg">
                   Our AI utilizes quantum computing to process and respond to
                   calls across vast interstellar distances with zero latency.
                 </p>
@@ -58,7 +58,7 @@ export function AiAssiFeature() {
                   Universal Translator
                 </h3>
               </div>
-              <p className="text-gray-400">
+              <p className="text-gray-400 font-mono text-lg">
                 Instantly translates over 12,000 known languages and dialects
                 from across the galaxy with cultural context preservation.
               </p>
@@ -72,7 +72,7 @@ export function AiAssiFeature() {
                   Emotional Intelligence
                 </h3>
               </div>
-              <p className="text-gray-400">
+              <p className="text-gray-400 font-mono text-lg">
                 Advanced algorithms detect and respond to emotional cues across
                 species, ensuring empathetic communication.
               </p>
@@ -86,7 +86,7 @@ export function AiAssiFeature() {
                   Quantum Encryption
                 </h3>
               </div>
-              <p className="text-gray-400">
+              <p className="text-gray-400 font-mono text-lg">
                 Military-grade security protocols ensure your communications
                 remain private across the vastness of space.
               </p>

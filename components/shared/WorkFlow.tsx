@@ -68,7 +68,7 @@ export function WorkFlow() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
             How It Works
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg lg:text-xl text-gray-300 max-w-2xl mx-auto font-mono">
             Simple, seamless, and smart - here is how your AI assistant works
           </p>
         </div>
@@ -84,7 +84,7 @@ export function WorkFlow() {
               <h3 className="text-xl font-bold mb-4 text-white">
                 1. Customer Calls
               </h3>
-              <p className="text-gray-300">
+              <p className="text-gray-300 font-mono text-lg">
                 A potential customer calls your dedicated AI assistant number.
               </p>
             </div>
@@ -99,7 +99,7 @@ export function WorkFlow() {
               <h3 className="text-xl font-bold mb-4 text-white">
                 2. Smart Routing
               </h3>
-              <p className="text-gray-300">
+              <p className="text-gray-300 font-mono text-lg">
                 System tries to reach you first. If unavailable, AI takes over.
               </p>
             </div>
@@ -114,7 +114,7 @@ export function WorkFlow() {
               <h3 className="text-xl font-bold mb-4 text-white">
                 3. AI Collects Info
               </h3>
-              <p className="text-gray-300">
+              <p className="text-gray-300 font-mono text-lg">
                 AI Assitant gathers required info, then notifies you.
               </p>
             </div>
@@ -126,7 +126,7 @@ export function WorkFlow() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
             Powerful Features
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">
             Everything you need to capture and manage leads effectively
           </p>
         </div>
@@ -138,7 +138,7 @@ export function WorkFlow() {
             <h4 className="text-lg font-bold mb-3 text-white">
               Smart Call Routing
             </h4>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-mono text-lg">
               call distribution based on availability and expertise.
             </p>
           </div>
@@ -148,7 +148,7 @@ export function WorkFlow() {
               <i className="fas fa-robot text-xl text-[#B026FF]"></i>
             </div>
             <h4 className="text-lg font-bold mb-3 text-white">AI Assistant</h4>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-mono text-lg">
               AI handling calls with natural language processing.
             </p>
           </div>
@@ -160,7 +160,7 @@ export function WorkFlow() {
             <h4 className="text-lg font-bold mb-3 text-white">
               Lead Management
             </h4>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-mono text-lg">
               Comprehensive lead tracking and management system.
             </p>
           </div>
@@ -172,7 +172,7 @@ export function WorkFlow() {
             <h4 className="text-lg font-bold mb-3 text-white">
               Instant Notifications
             </h4>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-mono text-lg">
               Real-time alerts for new leads and important updates.
             </p>
           </div>
@@ -184,7 +184,7 @@ export function WorkFlow() {
             <h4 className="text-lg font-bold mb-3 text-white">
               Analytics & Insights
             </h4>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-mono text-lg">
               Detailed reporting and performance analytics.
             </p>
           </div>
@@ -196,7 +196,7 @@ export function WorkFlow() {
             <h4 className="text-lg font-bold mb-3 text-white">
               Enterprise Security
             </h4>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-mono text-lg">
               Military-grade encryption and data protection.
             </p>
           </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import { Lead } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Users, CheckCircle, Clock } from 'lucide-react';
+import { Lead } from "@/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Phone, Users, CheckCircle, Clock } from "lucide-react";
 
 interface StatsCardsProps {
   leads: Lead[];
@@ -10,38 +10,40 @@ interface StatsCardsProps {
 
 export default function StatsCards({ leads }: StatsCardsProps) {
   const totalLeads = leads.length;
-  const pendingLeads = leads.filter(lead => lead.status === 'pending').length;
-  const contactedLeads = leads.filter(lead => lead.status === 'contacted').length;
-  const closedLeads = leads.filter(lead => lead.status === 'closed').length;
+  const pendingLeads = leads.filter((lead) => lead.status === "pending").length;
+  const contactedLeads = leads.filter(
+    (lead) => lead.status === "contacted"
+  ).length;
+  const closedLeads = leads.filter((lead) => lead.status === "closed").length;
 
   const stats = [
     {
-      title: 'Total Leads',
+      title: "Total Leads",
       value: totalLeads,
       icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      color: "text-[#00F0FF]",
+      bgColor: "bg-[#00F0FF]/10",
     },
     {
-      title: 'Pending',
+      title: "Pending",
       value: pendingLeads,
       icon: Clock,
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-50',
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-400/10",
     },
     {
-      title: 'Contacted',
+      title: "Contacted",
       value: contactedLeads,
       icon: Phone,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      color: "text-[#B026FF]",
+      bgColor: "bg-[#B026FF]/10",
     },
     {
-      title: 'Closed',
+      title: "Closed",
       value: closedLeads,
       icon: CheckCircle,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      color: "text-[#FF2E9F]",
+      bgColor: "bg-[#FF2E9F]/10",
     },
   ];
 
@@ -50,9 +52,12 @@ export default function StatsCards({ leads }: StatsCardsProps) {
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.title}>
+          <Card
+            key={stat.title}
+            className="bg-[#0a0a0a]/60 backdrop-blur-sm border border-[#333] hover:border-[#00F0FF]/30 transition-colors"
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 {stat.title}
               </CardTitle>
               <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -60,7 +65,7 @@ export default function StatsCards({ leads }: StatsCardsProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-2xl font-bold text-white">{stat.value}</div>
             </CardContent>
           </Card>
         );

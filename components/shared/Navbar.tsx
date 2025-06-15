@@ -1,10 +1,14 @@
 "use client";
+import { SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export function NavBar() {
   const [activeNavItem, setActiveNavItem] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -18,7 +22,7 @@ export function NavBar() {
     <header className="sticky px-5  lg:px-10  top-0 z-50 backdrop-blur-lg bg-black border-b border-[#00F0FF]/20">
       <div className=" mx-auto px-4 max-w-7xl py-4 flex justify-between gap-2 items-center">
         {/* Logo */}
-        <div className="flex items-center">
+        <Link href={"/"} className="flex items-center">
           <div className="relative w-10 h-10 mr-3">
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-pulse"></div>
             <div className="absolute inset-1 rounded-full bg-[#0A0A0A] flex items-center justify-center">
@@ -28,7 +32,7 @@ export function NavBar() {
           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
             AiCall<span className="text-[#B026FF]">er</span>
           </h1>
-        </div>
+        </Link>
         {/* Desktop Orbital Navigation */}
         <nav className="hidden md:flex justify-evenly items-center space-x-8">
           {[
@@ -69,10 +73,24 @@ export function NavBar() {
             </button>
           </div>
           {/* Login Button */}
-          <button className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer">
-            <i className="fas fa-user-astronaut mr-2"></i>
-            Login
-          </button>
+          <SignedOut>
+            <Link
+              href={"/sign-in"}
+              className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+            >
+              <i className="fas fa-user-astronaut mr-2 self-center"></i>
+              Login
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <Link
+              href={"/sign-in"}
+              className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+            >
+              <i className="fas fa-user-astronaut mr-2 self-center"></i>
+              Dashboard
+            </Link>
+          </SignedIn>
           {/* Mobile Menu Button */}
           <button
             className="md:hidden text-2xl text-[#00F0FF] cursor-pointer !rounded-button whitespace-nowrap"
@@ -109,10 +127,24 @@ export function NavBar() {
               {item.label}
             </Link>
           ))}
-          <button className="px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer">
-            <i className="fas fa-user-astronaut mr-2"></i>
-            Login
-          </button>
+          <SignedOut>
+            <Link
+              href={"/sign-in"}
+              className="px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+            >
+              <i className="fas fa-user-astronaut mr-2 self-center"></i>
+              Login
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <Link
+              href={"/sign-in"}
+              className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+            >
+              <i className="fas fa-user-astronaut mr-2 self-center"></i>
+              Dashboard
+            </Link>
+          </SignedIn>
         </div>
       </div>
     </header>

@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Error occured -- no svix headers", {
+    return new Response("Error occurred -- no svix headers", {
       status: 400,
     });
   }
@@ -45,7 +45,8 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    return new Response("Error occured", {
+    console.error("Error verifying webhook:", err);
+    return new Response("Error occurred", {
       status: 400,
     });
   }
@@ -65,55 +66,111 @@ export async function POST(req: Request) {
       public_metadata,
     } = evt.data;
 
-    const phone = (public_metadata?.phone as string) || null;
+    const phone = (public_metadata?.phone as string) || "";
+    const twilioNumber = (public_metadata?.twilioNumber as string) || "";
+    const isActive = (public_metadata?.isActive as boolean) || false;
+    const aiSettings = (public_metadata?.aiSettings as {
+      greeting: string;
+      questions: string[];
+      businessInfo: string;
+    }) || {
+      greeting: "",
+      questions: [],
+      businessInfo: "",
+    };
 
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
-      username: username,
-      firstName: first_name,
-      lastName: last_name,
+      username: username || "",
+      firstName: first_name || "",
+      lastName: last_name || "",
       phone,
+      twilioNumber,
+      isActive,
+      aiSettings,
       photo: image_url,
     };
-    const newUser = await createUser(user);
 
-    // Set public metadata
-    if (newUser) {
-      await clerkClient.users.updateUserMetadata(id, {
-        publicMetadata: {
-          userId: newUser._id,
-        },
-      });
+    try {
+      const newUser = await createUser(user);
+
+      // Set public metadata
+      if (newUser) {
+        await clerkClient.users.updateUserMetadata(id, {
+          publicMetadata: {
+            userId: newUser._id,
+          },
+        });
+      }
+
+      return NextResponse.json({ message: "OK", user: newUser });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return NextResponse.json(
+        { message: "Error creating user" },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json({ message: "OK", user: newUser });
   }
 
   // UPDATE
   if (eventType === "user.updated") {
-    const { id, image_url, first_name, last_name, username } = evt.data;
+    const { id, image_url, first_name, last_name, username, public_metadata } =
+      evt.data;
 
-    const user = {
-      firstName: first_name,
-      lastName: last_name,
-      username: username,
-      photo: image_url,
+    const phone = (public_metadata?.phone as string) || "";
+    const twilioNumber = (public_metadata?.twilioNumber as string) || "";
+    const isActive = (public_metadata?.isActive as boolean) || false;
+    const aiSettings = (public_metadata?.aiSettings as {
+      greeting: string;
+      questions: string[];
+      businessInfo: string;
+    }) || {
+      greeting: "",
+      questions: [],
+      businessInfo: "",
     };
 
-    const updatedUser = await updateUser(id, user);
+    try {
+      const updatedUser = await updateUser(id, {
+        username: username || "",
+        firstName: first_name || "",
+        lastName: last_name || "",
+        phone,
+        twilioNumber,
+        isActive,
+        aiSettings,
+        photo: image_url,
+      });
 
-    return NextResponse.json({ message: "OK", user: updatedUser });
+      return NextResponse.json({ message: "OK", user: updatedUser });
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return NextResponse.json(
+        { message: "Error updating user" },
+        { status: 500 }
+      );
+    }
   }
 
   // DELETE
   if (eventType === "user.deleted") {
     const { id } = evt.data;
 
-    const deletedUser = await deleteUser(id!);
-
-    return NextResponse.json({ message: "OK", user: deletedUser });
+    try {
+      await deleteUser(id!);
+      return NextResponse.json({ message: "OK" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return NextResponse.json(
+        { message: "Error deleting user" },
+        { status: 500 }
+      );
+    }
   }
 
-  return new Response("", { status: 200 });
+  return NextResponse.json({ message: "OK" });
 }
+
+export const dynamic = "force-dynamic";

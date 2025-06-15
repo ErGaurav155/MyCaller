@@ -5,7 +5,7 @@ import Image from "next/image";
 export function AboutUs() {
   return (
     <section id="about" className="py-20 relative">
-      <div className="container mx-auto px-4">
+      <div className="container max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <div className="relative w-full h-80 md:h-96">
@@ -23,13 +23,13 @@ export function AboutUs() {
             <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
               About NebulaCom3047
             </h2>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-300 mb-6 font-mono text-lg">
               Founded in the year 3047, NebulaCom has been at the forefront of
               interstellar communication technology for over two decades. Our
               mission is to connect civilizations across the cosmos with
               seamless, intelligent communication solutions.
             </p>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-300 mb-6 font-mono text-lg">
               With headquarters in the Orion Nebula and offices across 17 star
               systems, we are uniquely positioned to understand the diverse
               communication needs of the modern galactic community.

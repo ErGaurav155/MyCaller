@@ -38,20 +38,20 @@ export function Chatbot() {
             }}
           >
             <div className="bg-[#00F0FF]/10 backdrop-blur-sm rounded-lg p-3 mb-3 max-w-[80%]">
-              <p className="text-[#00F0FF] text-sm">
+              <p className="text-[#00F0FF] text-sm font-mono ">
                 Hello, cosmic traveler! I am your AI assistant. How can I help
                 you navigate our services today?
               </p>
             </div>
             <div className="flex justify-end mb-3">
               <div className="bg-[#B026FF]/10 backdrop-blur-sm rounded-lg p-3 max-w-[80%]">
-                <p className="text-[#B026FF] text-sm">
+                <p className="text-[#B026FF] text-sm font-mono">
                   I need help with call assistant packages.
                 </p>
               </div>
             </div>
             <div className="bg-[#00F0FF]/10 backdrop-blur-sm rounded-lg p-3 mb-3 max-w-[80%]">
-              <p className="text-[#00F0FF] text-sm">
+              <p className="text-[#00F0FF] text-sm font-mono">
                 Great! We offer several AI call assistant packages. Would you
                 like to explore our Quantum Call Assistant or something more
                 specialized?

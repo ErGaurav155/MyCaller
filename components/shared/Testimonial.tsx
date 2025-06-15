@@ -9,7 +9,7 @@ export function Testimonial() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
             Interstellar Testimonials
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">
             Hear from our clients across the galaxy about their experience with
             our AI communication solutions.
           </p>
@@ -26,7 +26,7 @@ export function Testimonial() {
                 <p className="text-sm text-[#00F0FF]">Andromeda Trading Corp</p>
               </div>
             </div>
-            <p className="text-gray-300 mb-4">
+            <p className="text-gray-300 mb-4 font-mono text-lg">
               The universal translator has revolutionized our interspecies
               negotiations. We have increased trade agreements by 300% since
               implementation.
@@ -52,7 +52,7 @@ export function Testimonial() {
                 </p>
               </div>
             </div>
-            <p className="text-gray-300 mb-4">
+            <p className="text-gray-300 mb-4 font-mono text-lg">
               The emotional intelligence module has been crucial for our
               xenobiology research. It understands nuances that would be lost in
               traditional translation.
@@ -78,7 +78,7 @@ export function Testimonial() {
                 </p>
               </div>
             </div>
-            <p className="text-gray-300 mb-4">
+            <p className="text-gray-300 mb-4 font-mono text-lg">
               Our safari packages have become the top-rated experience in the
               Orion Arm thanks to the cultural context preservation in the AI
               guides.

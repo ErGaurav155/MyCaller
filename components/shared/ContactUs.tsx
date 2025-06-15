@@ -23,7 +23,7 @@ export function ContactUs() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
               Contact Our Interstellar Team
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono ">
               Have questions about our services? Our team is available across
               all time zones and dimensions.
             </p>
@@ -34,7 +34,7 @@ export function ContactUs() {
                 <label className="block text-gray-300 mb-2">Your Name</label>
                 <input
                   type="text"
-                  className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF]"
+                  className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] font-mono text-lg"
                   placeholder="Enter your name"
                 />
               </div>
@@ -42,14 +42,14 @@ export function ContactUs() {
                 <label className="block text-gray-300 mb-2">Your Email</label>
                 <input
                   type="email"
-                  className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF]"
+                  className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] font-mono text-lg"
                   placeholder="Enter your email"
                 />
               </div>
               <div>
                 <label className="block text-gray-300 mb-2">Star System</label>
                 <div className="relative">
-                  <select className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] appearance-none">
+                  <select className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] appearance-none font-mono text-lg">
                     <option>Solar System</option>
                     <option>Alpha Centauri</option>
                     <option>Sirius System</option>
@@ -66,7 +66,7 @@ export function ContactUs() {
                   Service Interest
                 </label>
                 <div className="relative">
-                  <select className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] appearance-none">
+                  <select className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] appearance-none font-mono text-lg">
                     <option>AI Call Assistant</option>
                     <option>Quantum Shuttle Rentals</option>
                     <option>Exoplanet Safari Packages</option>
@@ -81,7 +81,7 @@ export function ContactUs() {
             <div className="mb-8">
               <label className="block text-gray-300 mb-2">Your Message</label>
               <textarea
-                className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] h-32"
+                className="w-full bg-[#1A1A1A] border border-[#333] rounded-button py-3 px-4 text-white focus:outline-none focus:border-[#00F0FF] h-32 font-mono text-lg"
                 placeholder="Tell us how we can help you..."
               ></textarea>
             </div>
