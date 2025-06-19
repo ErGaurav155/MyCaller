@@ -1,7 +1,20 @@
 "use client";
-import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 export function Footer() {
+  const [activeNavItem, setActiveNavItem] = useState("home");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+  const handleNavClick = (navItem: string) => {
+    setActiveNavItem(navItem);
+    setIsMenuOpen(false);
+  };
   return (
     <footer className=" backdrop-blur-sm bg-[#0A0A0A] border-t border-[#00F0FF]/20 pt-16 pb-8">
       <div className="container max-w-7xl mx-auto px-4">
@@ -71,42 +84,37 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white mb-6">Company</h3>
-            <ul className="space-y-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
+            <h3 className="text-lg font-semibold text-gray-200 mb-6">
+              Company
+            </h3>
+            <div className="flex flex-col justify-start items-start text-md font-normal gap-2">
+              {[
+                { id: "features", label: "Features" },
+                { id: "pricing", label: "Pricing" },
+                { id: "reviews", label: "Reviews" },
+                { id: "contact", label: "Contact Us" },
+              ].map((item) => (
+                <Link
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className={`  cursor-pointer  ${
+                    activeNavItem === item.id ? "text-[#00F0FF]" : "text-white"
+                  }`}
+                  onClick={() => handleNavClick(item.id)}
                 >
-                  Feature
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Review
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Contact
-                </a>
-              </li>
-            </ul>
+                  <span className="text-gray-400 hover:text-[#00F0FF] ">
+                    {item.label}
+                  </span>
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 bg-[#00F0FF]  ${
+                      activeNavItem === item.id
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
+                </Link>
+              ))}
+            </div>
           </div>
           <div>
             <h3 className="text-lg font-bold text-white mb-6">Subscribe</h3>
