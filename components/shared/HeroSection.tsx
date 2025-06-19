@@ -23,16 +23,15 @@ export function HeroSection() {
       <div className="container mx-auto px-4 py-16 relative z-30 flex flex-col md:flex-row items-center max-w-7xl">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            <span className="block text-[#00F0FF]">Intergalactic</span>
+            <span className="block text-[#00F0FF]">Advanced AI</span>
             <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#B026FF] to-[#FF2E9F]">
-              AI Call Assistant
+              Call Assistant
             </span>
-            <span className="block text-white">For The Future</span>
+            <span className="block text-white">For The Businesses</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-xl font-mono">
-            Experience quantum communication across galaxies with our AI
-            assistants. Connecting civilizations since 3047, now available for
-            your interstellar business needs.
+            Advanced Customer Call handling with our AI assistants. Now
+            available for your local business needs.
           </p>
           <div className="flex flex-wrap gap-4">
             <button className="px-8 py-3 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer">
@@ -56,9 +55,9 @@ export function HeroSection() {
               </div>
             </div>
             <div>
-              <div className="text-[#00F0FF] font-medium">10,000+ Clients</div>
+              <div className="text-[#00F0FF] font-medium">1,000+ Clients</div>
               <div className="text-sm text-gray-400">
-                Across 500+ Star Systems
+                Across 500+ Local Business
               </div>
             </div>
           </div>

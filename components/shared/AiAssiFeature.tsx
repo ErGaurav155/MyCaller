@@ -8,11 +8,11 @@ export function AiAssiFeature() {
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
-            Our Interstellar AI Call Assistant
+            Our Advanced AI Call Assistant
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">
             Revolutionize your communication with our advanced AI technology
-            designed for seamless interstellar conversations.
+            designed for seamless customers call handling.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -28,11 +28,10 @@ export function AiAssiFeature() {
               />
               <div className="p-6">
                 <h3 className="text-2xl font-bold mb-3 text-white">
-                  Quantum Neural Processing
+                  Automated Speech Recognition
                 </h3>
                 <p className="text-gray-300 mb-4 font-mono text-lg">
-                  Our AI utilizes quantum computing to process and respond to
-                  calls across vast interstellar distances with zero latency.
+                  Advanced Technologies Behind Our Voice AI
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <span className="px-3 py-1 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] text-sm">
@@ -54,13 +53,12 @@ export function AiAssiFeature() {
                 <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#00F0FF]/20 to-[#00F0FF]/5 flex items-center justify-center mr-4">
                   <i className="fas fa-language text-2xl text-[#00F0FF]"></i>
                 </div>
-                <h3 className="text-xl font-bold text-white">
-                  Universal Translator
-                </h3>
+                <h3 className="text-xl font-bold text-white">Generative AI</h3>
               </div>
               <p className="text-gray-400 font-mono text-lg">
-                Instantly translates over 12,000 known languages and dialects
-                from across the galaxy with cultural context preservation.
+                Using advanced LLM technology, our AI comprehends complex
+                queries and delivers human-like responses instantly, ensuring
+                relevant and natural communication.
               </p>
             </div>
             <div className="bg-[#0A0A0A]/60 backdrop-blur-sm border border-[#B026FF]/20 rounded-lg p-6 hover:border-[#B026FF]/50 transition-all duration-300">
@@ -69,12 +67,13 @@ export function AiAssiFeature() {
                   <i className="fas fa-robot text-2xl text-[#B026FF]"></i>
                 </div>
                 <h3 className="text-xl font-bold text-white">
-                  Emotional Intelligence
+                  Natural Language Understanding (NLU)
                 </h3>
               </div>
               <p className="text-gray-400 font-mono text-lg">
-                Advanced algorithms detect and respond to emotional cues across
-                species, ensuring empathetic communication.
+                AiCaller’s NLU engine accurately detects intent, sentiment, and
+                entity nuances, including accents and tone shifts, for enhanced
+                support experiences.
               </p>
             </div>
             <div className="bg-[#0A0A0A]/60 backdrop-blur-sm border border-[#FF2E9F]/20 rounded-lg p-6 hover:border-[#FF2E9F]/50 transition-all duration-300">
@@ -83,12 +82,13 @@ export function AiAssiFeature() {
                   <i className="fas fa-shield-alt text-2xl text-[#FF2E9F]"></i>
                 </div>
                 <h3 className="text-xl font-bold text-white">
-                  Quantum Encryption
+                  Plug and Play Integration
                 </h3>
               </div>
               <p className="text-gray-400 font-mono text-lg">
-                Military-grade security protocols ensure your communications
-                remain private across the vastness of space.
+                AiCaller’s Voice AI easily integrates with cloud telephony, IVR,
+                ACD, and PBX systems. Connect it to your UCaaS ecosystem or
+                lease a calling line for quick setup
               </p>
             </div>
             <button className="w-full py-3 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer">

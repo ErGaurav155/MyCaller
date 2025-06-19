@@ -3,13 +3,13 @@ import { NavBar } from "@/components/shared/Navbar";
 import { HeroSection } from "@/components/shared/HeroSection";
 import { WorkFlow } from "@/components/shared/WorkFlow";
 import { AiAssiFeature } from "@/components/shared/AiAssiFeature";
-import { Service } from "@/components/shared/Services";
 import { Pricing } from "@/components/shared/Pricing";
 import { Testimonial } from "@/components/shared/Testimonial";
 import { ContactUs } from "@/components/shared/ContactUs";
 import { Chatbot } from "@/components/shared/Chatbot";
 import { Footer } from "@/components/shared/Footer";
 import { AboutUs } from "@/components/shared/AboutUs";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -18,7 +18,7 @@ export default function HomePage() {
       <HeroSection />
       <WorkFlow />
       <AiAssiFeature />
-      <Service />
+
       <Pricing />
       <section className="py-16 px-4 sm:px-6 lg:px-8 relative z-30 ">
         <div className="max-w-7xl  mx-auto">
@@ -52,12 +52,15 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-[#0A0A0A]/60 backdrop-blur-sm border border-[#00F0FF]/20 rounded-lg p-6 hover:border-[#00F0FF]/50 transition-all duration-300">
+            <Link
+              href={"/pricing"}
+              className="bg-[#0A0A0A]/60 backdrop-blur-sm border border-[#00F0FF]/20 rounded-lg p-6 hover:border-[#00F0FF]/50 transition-all duration-300"
+            >
               <div className="flex flex-col gap-2 items-center mb-4">
                 <Phone className="h-10 w-10 text-blue-600" />
                 <div>
                   <h4 className="text-lg font-bold text-white">
-                    Your AI Number{" "}
+                    Get Your AI Number{" "}
                   </h4>
                   <p className="text-lg text-[#00F0FF] mt-3">
                     +1 (987) 654-3210
@@ -68,7 +71,7 @@ export default function HomePage() {
                 This is your dedicated AI assistant number. Share it with
                 customers or use it in your marketing materials.
               </p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

@@ -65,31 +65,7 @@ export function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
                 >
-                  Quantum Shuttle Rentals
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Exoplanet Safari Packages
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Interstellar Support
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Galactic Translations
+                  Lead Generation
                 </a>
               </li>
             </ul>
@@ -102,7 +78,7 @@ export function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
                 >
-                  About Us
+                  Feature
                 </a>
               </li>
               <li>
@@ -110,7 +86,7 @@ export function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
                 >
-                  Careers
+                  Pricing
                 </a>
               </li>
               <li>
@@ -118,17 +94,10 @@ export function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
                 >
-                  Blog
+                  Review
                 </a>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-[#00F0FF] transition-colors cursor-pointer"
-                >
-                  Press
-                </a>
-              </li>
+
               <li>
                 <a
                   href="#"

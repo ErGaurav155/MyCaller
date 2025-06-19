@@ -7,10 +7,10 @@ export function Testimonial() {
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
-            Interstellar Testimonials
+            Testimonials
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">
-            Hear from our clients across the galaxy about their experience with
+            Hear from our clients across the world about their experience with
             our AI communication solutions.
           </p>
         </div>
@@ -22,14 +22,17 @@ export function Testimonial() {
                 <i className="fas fa-user-astronaut text-xl text-[#00F0FF]"></i>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white">Commander Zara</h4>
-                <p className="text-sm text-[#00F0FF]">Andromeda Trading Corp</p>
+                <h4 className="text-lg font-bold text-white">Rajat Garg</h4>
+                <p className="text-sm text-[#00F0FF]">
+                  CTO | Lead product & tech
+                </p>
               </div>
             </div>
             <p className="text-gray-300 mb-4 font-mono text-lg">
-              The universal translator has revolutionized our interspecies
-              negotiations. We have increased trade agreements by 300% since
-              implementation.
+              AiCaller has helped us streamline our support function efficiently
+              and effectively. The solution has been instrumental in helping us
+              even track agents’ performance and its impact on customer
+              satisfaction is quite visible
             </p>
             <div className="flex text-[#00F0FF]">
               <i className="fas fa-star"></i>
@@ -46,16 +49,19 @@ export function Testimonial() {
                 <i className="fas fa-user-tie text-xl text-[#B026FF]"></i>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white">Dr. Xeno Vex</h4>
+                <h4 className="text-lg font-bold text-white">
+                  Vandana Thutupalli
+                </h4>
                 <p className="text-sm text-[#B026FF]">
-                  Galactic Research Institute
+                  Vice President, Marketing and Growth
                 </p>
               </div>
             </div>
             <p className="text-gray-300 mb-4 font-mono text-lg">
-              The emotional intelligence module has been crucial for our
-              xenobiology research. It understands nuances that would be lost in
-              traditional translation.
+              AiCaller stood out to us for its user-friendly interface, seamless
+              integrations, and direct WhatsApp business service. We have also
+              utilised their AI future to train the solution with frequently
+              asked questions and relevant answers.
             </p>
             <div className="flex text-[#B026FF]">
               <i className="fas fa-star"></i>
@@ -72,16 +78,16 @@ export function Testimonial() {
                 <i className="fas fa-user-graduate text-xl text-[#FF2E9F]"></i>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white">Captain Nova</h4>
-                <p className="text-sm text-[#FF2E9F]">
-                  Stellar Tourism Alliance
-                </p>
+                <h4 className="text-lg font-bold text-white">
+                  Suryanarayanan N
+                </h4>
+                <p className="text-sm text-[#FF2E9F]">Senior Quality Analyst</p>
               </div>
             </div>
             <p className="text-gray-300 mb-4 font-mono text-lg">
-              Our safari packages have become the top-rated experience in the
-              Orion Arm thanks to the cultural context preservation in the AI
-              guides.
+              The team has been super helpful and approachable. We’ve been able
+              to suggest new ideas and customizations easily, and the dashboard
+              with live statistics has been extremely helpful.
             </p>
             <div className="flex text-[#FF2E9F]">
               <i className="fas fa-star"></i>
