@@ -3,9 +3,9 @@ import { createPayPalOrder } from "@/lib/paypal";
 
 export async function POST(req: NextRequest) {
   try {
-    const { amount, plan, billingCycle } = await req.json();
+    const { amount, plan, billingCycle, buyerId } = await req.json();
 
-    if (!amount || !plan || !billingCycle) {
+    if (!amount || !plan || !billingCycle || !buyerId) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }

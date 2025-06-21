@@ -18,6 +18,9 @@ import {
 import PricingCard from "@/components/pricing/PricingCard";
 import PaymentModal from "@/components/pricing/PaymentModal";
 import { PricingPlan } from "@/types";
+import { useAuth } from "@clerk/nextjs";
+import { getUserById } from "@/lib/action/user.actions";
+import { useRouter } from "next/navigation";
 
 const pricingPlans: PricingPlan[] = [
   {
@@ -29,7 +32,7 @@ const pricingPlans: PricingPlan[] = [
     callLimit: 500,
     leadLimit: 100,
     features: [
-      "500  calls / month",
+      "225  calls / month",
       "Basic  AI responses",
       "Email notifications",
       "24/7 support",
@@ -46,7 +49,7 @@ const pricingPlans: PricingPlan[] = [
     leadLimit: 500,
     popular: true,
     features: [
-      "2,000 calls / month",
+      "500 calls / month",
       "Custom AI responses",
       "SMS + Email notifications",
       "24/7 premium support",
@@ -73,12 +76,16 @@ const pricingPlans: PricingPlan[] = [
   },
 ];
 
-export function Pricing() {
+export const Pricing = () => {
+  const { userId } = useAuth();
+  const router = useRouter();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
     "monthly"
   );
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [buyerId, setBuyerId] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const handleSubscribe = (plan: PricingPlan, cycle: "monthly" | "yearly") => {
     setSelectedPlan(plan);
@@ -86,58 +93,27 @@ export function Pricing() {
   };
 
   useEffect(() => {
-    // Simulate particles with random stars
-    const createStarParticles = () => {
-      const starsContainer = document.getElementById("stars-container");
-      if (!starsContainer) return;
-      starsContainer.innerHTML = "";
-      const numberOfStars = 150;
-      for (let i = 0; i < numberOfStars; i++) {
-        const star = document.createElement("div");
-        star.className = "absolute rounded-full";
-        // Random size
-        const size = Math.random() * 3;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        // Random position
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        // Random color - use theme colors
-        const colors = ["#00F0FF", "#B026FF", "#FF2E9F", "#FFFFFF"];
-        star.style.backgroundColor =
-          colors[Math.floor(Math.random() * colors.length)];
-        // Random opacity
-        star.style.opacity = `${Math.random() * 0.8 + 0.2}`;
-        // Animation
-        star.style.animation = `twinkle ${Math.random() * 5 + 3}s infinite`;
-        starsContainer.appendChild(star);
+    const fetchUserData = async () => {
+      if (userId) {
+        try {
+          const buyer = await getUserById(userId);
+          if (!buyer) {
+            router.push("/sign-in");
+            return;
+          }
+          setBuyerId(buyer._id);
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
       }
+      fetchUserData();
     };
-    createStarParticles();
-    // Add keyframes for twinkling animation
-    const style = document.createElement("style");
-    style.innerHTML = `
-          @keyframes twinkle {
-            0% { opacity: 0.2; }
-            50% { opacity: 1; }
-            100% { opacity: 0.2; }
-          }
-          @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-          }
-          @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-          }
-        `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
+  }, [userId, router]);
+
   return (
     <div className="min-h-screen     text-white">
       <section className="py-16 px-4 sm:px-6 lg:px-8 backdrop-blur-sm">
@@ -268,7 +244,7 @@ export function Pricing() {
                         : "bg-gradient-to-r from-[#FF2E9F]/80 to-[#FF2E9F]"
                     } text-black`}
                   >
-                    Get Started
+                    Purchase Now
                   </button>
                 </div>
               </div>
@@ -428,7 +404,8 @@ export function Pricing() {
         onClose={() => setIsPaymentModalOpen(false)}
         plan={selectedPlan}
         billingCycle={billingCycle}
+        buyerId={buyerId}
       />
     </div>
   );
-}
+};

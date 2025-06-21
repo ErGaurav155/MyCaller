@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Phone, Copy, CheckCircle } from "lucide-react";
+import Link from "next/link";
 
 interface PhoneNumberCardProps {
   phoneNumber: string;
@@ -47,7 +48,14 @@ export default function PhoneNumberCard({
       <CardContent className="space-y-4">
         <div className="flex flex-wrap items-center justify-between p-4 bg-[#0a0a0a]/80 backdrop-blur-sm rounded-lg border border-[#333]">
           <span className="text-2xl font-mono font-bold text-white">
-            {phoneNumber}
+            {phoneNumber ? (
+              phoneNumber
+            ) : (
+              <Link href={"/pricing"}>
+                <span className="text-base ">no number </span>
+                <Button className="text-[#00F0FF]  ">Buy a number</Button>
+              </Link>
+            )}
           </span>
           <Button
             variant="outline"

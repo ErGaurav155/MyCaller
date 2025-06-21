@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { Lead } from "@/types";
+import { LeadType } from "@/types";
 
-interface LeadDocument extends Omit<Lead, "_id">, Document {}
+interface LeadDocument extends Omit<LeadType, "_id">, Document {}
 
 const LeadSchema = new Schema<LeadDocument>(
   {
@@ -10,7 +10,7 @@ const LeadSchema = new Schema<LeadDocument>(
     email: { type: String },
     address: { type: String },
     businessOwner: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     },
@@ -26,5 +26,7 @@ const LeadSchema = new Schema<LeadDocument>(
   }
 );
 
-export default mongoose.models.Lead ||
-  mongoose.model<LeadDocument>("Lead", LeadSchema);
+const Lead =
+  mongoose.models?.Lead || mongoose.model<LeadDocument>("Lead", LeadSchema);
+
+export default Lead;

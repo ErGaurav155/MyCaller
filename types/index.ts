@@ -1,16 +1,16 @@
 import { Types } from "mongoose";
 
-export interface Lead {
+export interface LeadType {
   _id: string;
   name?: string;
   phone: string;
   email?: string;
   address?: string;
-  businessOwner: Types.ObjectId;
+  businessOwner: string;
   callSid: string;
   status: "pending" | "contacted" | "closed";
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface CreateUserType {
@@ -29,6 +29,8 @@ export interface CreateUserType {
   firstName: string;
   lastName: string;
   photo: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface UpdateUserType {
   username?: string;
@@ -49,7 +51,7 @@ export interface UpdateUserType {
 export interface CallSession {
   callSid: string;
   currentStep: number;
-  collectedData: Partial<Lead>;
+  collectedData: Partial<LeadType>;
   userId: string;
 }
 
@@ -63,6 +65,12 @@ export interface PricingPlan {
   popular?: boolean;
   callLimit: number;
   leadLimit: number;
+}
+
+export interface DashboardData {
+  leads: LeadType[];
+  user: CreateUserType | null;
+  error?: string;
 }
 // export interface CreateUserParams {
 //   clerkId: string;

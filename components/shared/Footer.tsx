@@ -1,20 +1,54 @@
 "use client";
+import { toast } from "@/hooks/use-toast";
+import { sendSubscriptionEmailToUser } from "@/lib/action/sendEmail.action";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export function Footer() {
-  const [activeNavItem, setActiveNavItem] = useState("home");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address",
+        className: "error-toast",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await sendSubscriptionEmailToUser(email);
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Subscription Successful!",
+          description: "Check your email for confirmation",
+          className: "success-toast",
+        });
+        setEmail(""); // Reset input
+      } else {
+        throw new Error(data.error || "Subscription failed");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Subscription Failed",
+        description: error.message || "An error occurred while subscribing",
+        className: "error-toast",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
-  const handleNavClick = (navItem: string) => {
-    setActiveNavItem(navItem);
-    setIsMenuOpen(false);
-  };
+
   return (
     <footer className=" backdrop-blur-sm bg-[#0A0A0A] border-t border-[#00F0FF]/20 pt-16 pb-8">
       <div className="container max-w-7xl mx-auto px-4">
@@ -97,21 +131,11 @@ export function Footer() {
                 <Link
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`  cursor-pointer  ${
-                    activeNavItem === item.id ? "text-[#00F0FF]" : "text-white"
-                  }`}
-                  onClick={() => handleNavClick(item.id)}
+                  className={`  cursor-pointer text-white `}
                 >
                   <span className="text-gray-400 hover:text-[#00F0FF] ">
                     {item.label}
                   </span>
-                  <span
-                    className={`absolute bottom-0 left-0 h-0.5 bg-[#00F0FF]  ${
-                      activeNavItem === item.id
-                        ? "w-full"
-                        : "w-0 group-hover:w-full"
-                    }`}
-                  ></span>
                 </Link>
               ))}
             </div>
@@ -119,18 +143,28 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-bold text-white mb-6">Subscribe</h3>
             <p className="text-gray-400 mb-4">
-              Stay updated with the latest in cosmic communication technology.
+              Stay updated with the latest in AI Call Assistance technology.
             </p>
-            <div className="flex flex-wrap gap-1 mb-4">
+            <form
+              onSubmit={handleSubscribe}
+              className="flex flex-wrap gap-1 mb-4"
+            >
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
                 className="flex-1 bg-[#1A1A1A] border-none rounded-l-button py-2 px-4 text-gray-300 text-sm focus:outline-none"
+                disabled={isLoading}
               />
-              <button className="bg-gradient-to-r from-[#00F0FF] to-[#B026FF] rounded-r-button py-2 px-4 text-black font-medium whitespace-nowrap cursor-pointer">
-                Subscribe
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="bg-gradient-to-r from-[#00F0FF] to-[#B026FF] rounded-r-button py-2 px-4 text-black font-medium whitespace-nowrap cursor-pointer disabled:opacity-75"
+              >
+                {isLoading ? "Subscribing..." : "Subscribe"}
               </button>
-            </div>
+            </form>
             <div className="flex flex-wrap items-center space-x-4">
               <div className="flex items-center">
                 <i className="fas fa-shield-alt text-[#00F0FF] mr-2"></i>
@@ -150,27 +184,20 @@ export function Footer() {
         <div className="pt-8 border-t border-[#333333]">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-500 text-sm mb-4 md:mb-0">
-              &copy; 3047 NebulaCom. All rights reserved across the known
-              universe.
+              &copy; AiCaller. All rights reserved by GK Services.
             </div>
             <div className="flex space-x-6">
               <a
-                href="#"
+                href="/privacy-policy"
                 className="text-gray-500 hover:text-[#00F0FF] text-sm transition-colors cursor-pointer"
               >
                 Privacy Policy
               </a>
               <a
-                href="#"
+                href="/TermsandCondition"
                 className="text-gray-500 hover:text-[#00F0FF] text-sm transition-colors cursor-pointer"
               >
                 Terms of Service
-              </a>
-              <a
-                href="#"
-                className="text-gray-500 hover:text-[#00F0FF] text-sm transition-colors cursor-pointer"
-              >
-                Cookies
               </a>
             </div>
           </div>

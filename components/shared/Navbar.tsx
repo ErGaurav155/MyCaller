@@ -1,20 +1,15 @@
 "use client";
-import { SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
-import { ArrowRight } from "lucide-react";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export function NavBar() {
-  const [activeNavItem, setActiveNavItem] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
   const handleNavClick = (navItem: string) => {
-    setActiveNavItem(navItem);
     setIsMenuOpen(false);
   };
 
@@ -36,29 +31,20 @@ export function NavBar() {
         {/* Desktop Orbital Navigation */}
         <nav className="hidden md:flex justify-evenly items-center space-x-8">
           {[
-            { id: "features", label: "Features" },
-            { id: "pricing", label: "Pricing" },
-            { id: "reviews", label: "Reviews" },
-            { id: "contact", label: "Contact Us" },
+            { id: "/Features", label: "Features" },
+            { id: "/pricing", label: "Pricing" },
+            { id: "/Review", label: "Reviews" },
+            { id: "/contactUs", label: "Contact Us" },
           ].map((item) => (
             <Link
               key={item.id}
-              href={`#${item.id}`}
-              className={`nav-link relative group cursor-pointer ${
-                activeNavItem === item.id ? "text-[#00F0FF]" : "text-white"
-              }`}
+              href={`${item.id}`}
+              className={` relative group cursor-pointer text-white hover:text-[#00F0FF] transition-colors`}
               onClick={() => handleNavClick(item.id)}
             >
               <span className="hover:text-[#00F0FF] transition-colors">
                 {item.label}
               </span>
-              <span
-                className={`absolute bottom-0 left-0 h-0.5 bg-[#00F0FF] transition-all duration-300 ${
-                  activeNavItem === item.id
-                    ? "w-full"
-                    : "w-0 group-hover:w-full"
-                }`}
-              ></span>
             </Link>
           ))}
         </nav>
@@ -84,7 +70,7 @@ export function NavBar() {
           </SignedOut>
           <SignedIn>
             <Link
-              href={"/sign-in"}
+              href={"/dashboard"}
               className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >
               <i className="fas fa-user-astronaut mr-2 self-center"></i>
@@ -106,7 +92,7 @@ export function NavBar() {
           isMenuOpen ? "max-h-96" : "max-h-0"
         }`}
       >
-        <div className="container mx-auto px-4 py-4 flex flex-col space-y-4 bg-[#0A0A0A]/80 backdrop-blur-lg">
+        <div className="container mx-auto px-4 py-4 flex flex-col space-y-4 backdrop-blur-lg">
           {[
             { id: "home", label: "Home" },
             { id: "assistant", label: "AI Call Assistant" },
@@ -119,9 +105,7 @@ export function NavBar() {
             <Link
               key={item.id}
               href={`#${item.id}`}
-              className={`text-white hover:text-[#00F0FF] transition-colors cursor-pointer ${
-                activeNavItem === item.id ? "text-[#00F0FF]" : ""
-              }`}
+              className={`text-white hover:text-[#00F0FF] transition-colors cursor-pointer `}
               onClick={() => handleNavClick(item.id)}
             >
               {item.label}

@@ -14,6 +14,27 @@ export async function POST(req: NextRequest) {
       billingCycle,
     } = await req.json();
 
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature ||
+      !userId ||
+      !billingCycle ||
+      !plan
+    ) {
+      return NextResponse.json(
+        { error: "Missing required parameters", success: false },
+        { status: 400 }
+      );
+    }
+    const secret = process.env.RAZORPAY_KEY_SECRET as string;
+    if (!secret) {
+      return NextResponse.json(
+        { error: "Razorpay secret not found" },
+        { status: 400 }
+      );
+    }
+
     // Verify signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
@@ -24,30 +45,10 @@ export async function POST(req: NextRequest) {
     if (expectedSignature !== razorpay_signature) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
-
-    // Update user subscription
-    await connectToDatabase();
-    const startDate = new Date();
-    const endDate = new Date();
-
-    if (billingCycle === "yearly") {
-      endDate.setFullYear(endDate.getFullYear() + 1);
-    } else {
-      endDate.setMonth(endDate.getMonth() + 1);
-    }
-
-    await User.findByIdAndUpdate(userId, {
-      subscription: {
-        plan,
-        status: "active",
-        billingCycle,
-        startDate,
-        endDate,
-        paymentMethod: "razorpay",
-      },
+    return NextResponse.json({
+      message: "Payment verified successfully",
+      success: true,
     });
-
-    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Payment verification error:", error);
     return NextResponse.json(

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Lead } from "@/types";
+import { LeadType } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +16,7 @@ import { Phone, Mail, MapPin, Clock, User } from "lucide-react";
 import { format } from "date-fns";
 
 interface LeadsTableProps {
-  leads: Lead[];
+  leads: LeadType[];
 }
 
 export default function LeadsTable({ leads: initialLeads }: LeadsTableProps) {

@@ -5,11 +5,12 @@ import { WorkFlow } from "@/components/shared/WorkFlow";
 import { AiAssiFeature } from "@/components/shared/AiAssiFeature";
 import { Pricing } from "@/components/shared/Pricing";
 import { Testimonial } from "@/components/shared/Testimonial";
-import { ContactUs } from "@/components/shared/ContactUs";
 import { Chatbot } from "@/components/shared/Chatbot";
 import { Footer } from "@/components/shared/Footer";
 import { AboutUs } from "@/components/shared/AboutUs";
 import Link from "next/link";
+import Feature from "@/components/shared/Feature";
+import ContactForm from "@/components/shared/Contactus";
 
 export default function HomePage() {
   return (
@@ -17,6 +18,7 @@ export default function HomePage() {
       <NavBar />
       <HeroSection />
       <WorkFlow />
+      <Feature />
       <AiAssiFeature />
 
       <Pricing />
@@ -77,7 +79,7 @@ export default function HomePage() {
       </section>
       <Testimonial />
       <AboutUs />
-      <ContactUs />
+      <ContactForm />
       <Chatbot />
       <Footer />
     </div>

@@ -7,239 +7,518 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard, MapPin, Globe } from "lucide-react";
 import { PricingPlan } from "@/types";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
+import { createRazerPaySubscription } from "@/lib/action/subscription.action";
 
+import React from "react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  PayPalButtons,
+  PayPalButtonsComponentProps,
+  PayPalScriptProvider,
+  ReactPayPalScriptOptions,
+} from "@paypal/react-paypal-js";
+import { createPayPalSubscription } from "@/lib/action/subscription.action";
+import OTPVerification from "../shared/OTPVerification";
+import { countryCodes } from "@/constant";
+import Script from "next/script";
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   plan: PricingPlan | null;
   billingCycle: "monthly" | "yearly";
+  buyerId: string;
 }
-
+interface CartPayProps {
+  paypalplanId: string;
+  productId: string;
+  buyerId: string;
+  billingCycle: string;
+  amount: number;
+}
 declare global {
   interface Window {
     Razorpay: any;
-    paypal: any;
   }
 }
+const phoneFormSchema = z.object({
+  MobileNumber: z
+    .string()
+    .min(10, "MOBILE number is required")
+    .regex(/^\d+$/, "invalid number"),
+});
+type PhoneFormData = z.infer<typeof phoneFormSchema>;
 
 export default function PaymentModal({
   isOpen,
   onClose,
   plan,
   billingCycle,
+  buyerId,
 }: PaymentModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paypalMode, setPaypalMode] = useState(false);
+  const [razorpayMode, setRazorpayMode] = useState(false);
+
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "paypal">(
     "razorpay"
   );
+  const [isOtpSubmitting, setIsOtpSubmitting] = useState(false);
+  const [countryCode, setCountryCode] = useState("+1"); // Default to US
+  const [phone, setPhone] = useState("");
 
-  useEffect(() => {
-    // Load Razorpay script
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
+  const [feedInfo, setFeedInfo] = useState(false);
+  const [step, setStep] = useState<"phone" | "otp" | "payment">("phone");
+  const router = useRouter();
+  const {
+    handleSubmit: handlePhoneSubmit,
+    register: registerPhone,
+    formState: { errors: phoneErrors },
+  } = useForm<PhoneFormData>({
+    resolver: zodResolver(phoneFormSchema),
+  });
+  const handlePhoneSubmission = async (data: PhoneFormData) => {
+    setIsOtpSubmitting(true);
+    try {
+      const fullPhoneNumber = `${countryCode}${data.MobileNumber}`;
 
-    // Load PayPal script
-    const paypalScript = document.createElement("script");
-    paypalScript.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&currency=USD`;
-    paypalScript.async = true;
-    document.body.appendChild(paypalScript);
-
-    return () => {
-      document.body.removeChild(script);
-      document.body.removeChild(paypalScript);
-    };
-  }, []);
-
+      const res = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullPhoneNumber }),
+      });
+      if (res.ok) {
+        setPhone(fullPhoneNumber);
+        setStep("otp");
+      } else {
+        console.error("Failed to send OTP:", res.statusText);
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+    } finally {
+      setIsOtpSubmitting(false);
+    }
+  };
   if (!plan) return null;
 
   const price =
     billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice;
   const usdPrice = Math.round(price * 0.012); // Approximate INR to USD conversion
-
+  const setRazorpayPayment = async () => {
+    setRazorpayMode(true);
+  };
   const handleRazorpayPayment = async () => {
     setIsProcessing(true);
 
     try {
-      const response = await fetch("/api/payments/razorpay/create-order", {
+      const response = await fetch("/api/payments/razorpay/subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: price,
-          plan: plan.id,
+          productId: plan.id,
           billingCycle,
+          buyerId,
         }),
       });
 
-      const { orderId, amount, currency, key } = await response.json();
-
+      const subscriptionCreate = await response.json();
+      if (!subscriptionCreate.isOk) {
+        throw new Error("Purchase Order is not created");
+      }
       const options = {
-        key,
-        amount,
-        currency,
-        name: "AI Call Assistant",
+        key_id: process.env.RAZORPAY_KEY_ID!,
+        amount: price * 100,
+        currency: "INR",
+        name: "GK Services",
         description: `${plan.name} Plan - ${billingCycle}`,
-        order_id: orderId,
+        subscription_id: subscriptionCreate.subsId,
+        notes: {
+          productId: plan.id,
+          buyerId: buyerId,
+          amount: price,
+        },
         handler: async (response: any) => {
+          const data = {
+            subscription_id: subscriptionCreate.subsId,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          };
           const verifyResponse = await fetch("/api/payments/razorpay/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...response,
-              userId: "demo-user-123", // Replace with actual user ID
-              plan: plan.id,
-              billingCycle,
-            }),
+            body: JSON.stringify(data),
           });
+          const res = await verifyResponse.json();
 
-          if (verifyResponse.ok) {
-            alert("Payment successful! Your subscription is now active.");
-            onClose();
+          if (res.success) {
+            toast({
+              title: "Payment Successful!",
+              description: "Code added to your Dashboard",
+              duration: 3000,
+              className: "success-toast",
+            });
+
+            await createRazerPaySubscription(
+              buyerId,
+              plan.id,
+              subscriptionCreate.subsId,
+              billingCycle
+            );
+
+            router.push("/dashboard");
           } else {
-            alert("Payment verification failed. Please contact support.");
+            toast({
+              title: "Order canceled!",
+              description: res.message,
+              duration: 3000,
+              className: "error-toast",
+            });
           }
         },
-        prefill: {
-          name: "Demo User",
-          email: "demo@example.com",
-          contact: "+919999999999",
-        },
+
         theme: {
           color: "#2563eb",
         },
       };
 
       const razorpay = new window.Razorpay(options);
+      razorpay.on("payment.failed", function (response: any) {
+        toast({
+          title: "Order failed!",
+          description: response.error.description,
+          duration: 3000,
+          className: "error-toast",
+        });
+      });
       razorpay.open();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Payment error:", error);
-      alert("Payment failed. Please try again.");
+      toast({
+        title: "Checkout Error",
+        description: error.message,
+        duration: 3000,
+        className: "error-toast",
+      });
     } finally {
       setIsProcessing(false);
     }
   };
+  const NEXT_PUBLIC_PAYPAL_CLIENT_ID =
+    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
 
-  const handlePayPalPayment = async () => {
-    setIsProcessing(true);
-
-    try {
-      const response = await fetch("/api/payments/paypal/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: usdPrice,
-          plan: plan.id,
-          billingCycle,
-        }),
+  const initialOptions: ReactPayPalScriptOptions = {
+    clientId: NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+    vault: true,
+    intent: "subscription",
+  };
+  const setPaypalPayment = async () => {
+    setPaypalMode(true);
+  };
+  const handlePayPalPayment = async () => {};
+  const createSubscription: PayPalButtonsComponentProps["createSubscription"] =
+    async (data, actions) => {
+      const subscription = await actions.subscription.create({
+        plan_id: plan.id,
+        custom_id: buyerId,
       });
 
-      const { orderId, approvalUrl } = await response.json();
+      return subscription;
+    };
+  const productId = plan.id;
+  const onApprove: PayPalButtonsComponentProps["onApprove"] = async (data) => {
+    try {
+      if (!data.subscriptionID) {
+        throw new Error("Subscription ID not found");
+      }
 
-      // Redirect to PayPal for approval
-      window.location.href = approvalUrl;
+      await createPayPalSubscription(
+        buyerId,
+        productId,
+        data.subscriptionID,
+        billingCycle
+      );
+
+      router.push("/dashboard");
     } catch (error) {
-      console.error("PayPal payment error:", error);
-      alert("Payment failed. Please try again.");
-    } finally {
-      setIsProcessing(false);
+      window.location.assign("/");
     }
   };
+  const onCancel: PayPalButtonsComponentProps["onCancel"] = () => {
+    window.location.assign("/");
+  };
 
+  const onError: PayPalButtonsComponentProps["onError"] = (err) => {
+    window.location.assign("/");
+  };
+  const handleOTPVerified = () => {
+    paymentMethod === "razorpay" ? setRazorpayPayment : handlePayPalPayment;
+  };
+  const onCheckout = async () => {
+    setFeedInfo(true);
+  };
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center">
-            Complete Your Subscription
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-md bg-[#0a0a0a]/90 backdrop-blur-lg border border-[#333] rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-center text-white font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+              Complete Your Subscription
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Plan Summary */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-medium">{plan.name} Plan</span>
-              <Badge>{billingCycle}</Badge>
+          <div className="space-y-6">
+            {/* Plan Summary */}
+            <div className="bg-[#1a1a1a]/50 backdrop-blur-sm p-4 rounded-xl border border-[#333]">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium text-gray-300">
+                  {plan.name} Plan
+                </span>
+                <Badge className="bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-white">
+                  {billingCycle}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center text-xl font-bold mt-4">
+                <span className="text-gray-300">Total</span>
+                <span className="text-white">₹{price.toLocaleString()}</span>
+              </div>
+              {billingCycle === "yearly" && (
+                <p className="text-sm text-green-400 mt-3 font-medium">
+                  Save ₹
+                  {(plan.monthlyPrice * 12 - plan.yearlyPrice).toLocaleString()}{" "}
+                  with yearly billing
+                </p>
+              )}
             </div>
-            <div className="flex justify-between items-center text-lg font-bold">
-              <span>Total</span>
-              <span>₹{price}</span>
-            </div>
-            {billingCycle === "yearly" && (
-              <p className="text-sm text-green-600 mt-1">
-                Save ₹{plan.monthlyPrice * 12 - plan.yearlyPrice} with yearly
-                billing
-              </p>
-            )}
-          </div>
 
-          <Separator />
+            <Separator className="bg-[#333]" />
 
-          {/* Payment Method Selection */}
-          <div className="space-y-3">
-            <h3 className="font-medium">Choose Payment Method</h3>
+            {/* Payment Method Selection */}
+            <div className="space-y-4">
+              <h3 className="font-medium text-gray-300 text-center">
+                Choose Payment Method
+              </h3>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant={paymentMethod === "razorpay" ? "default" : "outline"}
-                color="blue"
-                className="h-auto p-4 flex flex-col bg-sky-700 items-center text-white gap-2 "
-                onClick={() => setPaymentMethod("razorpay")}
-              >
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm font-medium">India</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div
+                  className={`rounded-xl p-4 flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 border ${
+                    paymentMethod === "razorpay"
+                      ? "border-[#00F0FF] bg-[#00F0FF]/10"
+                      : "border-[#333] hover:border-[#00F0FF]/50"
+                  }`}
+                  onClick={() => setPaymentMethod("razorpay")}
+                >
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-[#00F0FF]" />
+                    <span className="text-xs font-medium text-gray-300">
+                      India
+                    </span>
+                  </div>
+                  <span className="text-md font-medium text-white mt-2">
+                    Razorpay
+                  </span>
+                  <span className="font-bold text-white">
+                    ₹{price.toLocaleString()}
+                  </span>
                 </div>
-                <span className="text-lg text-black">Razorpay</span>
-                <span className="font-bold">₹{price}</span>
-              </Button>
 
-              <Button
-                variant={paymentMethod === "paypal" ? "default" : "outline"}
-                className="h-auto p-4 flex flex-col items-center bg-blue-900 gap-2"
-                onClick={() => setPaymentMethod("paypal")}
-              >
-                <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
-                  <span className="text-sm font-medium">International</span>
+                <div
+                  className={`rounded-xl p-4 flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 border ${
+                    paymentMethod === "paypal"
+                      ? "border-[#B026FF] bg-[#B026FF]/10"
+                      : "border-[#333] hover:border-[#B026FF]/50"
+                  }`}
+                  onClick={() => setPaymentMethod("paypal")}
+                >
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-[#B026FF]" />
+                    <span className="text-xs font-medium text-gray-300">
+                      International
+                    </span>
+                  </div>
+                  <span className="text-md font-medium text-white mt-2">
+                    PayPal
+                  </span>
+                  <span className="font-bold text-white">
+                    ${usdPrice.toLocaleString()}
+                  </span>
                 </div>
-                <span className="text-lg text-black">PayPal</span>
-                <span className="font-bold">${usdPrice}</span>
-              </Button>
+              </div>
             </div>
+
+            {/* Payment Button */}
+            <SignedIn>
+              <Button
+                className="w-full py-6 rounded-full font-bold text-lg bg-gradient-to-r from-[#00F0FF] to-[#B026FF] hover:from-[#00F0FF]/90 hover:to-[#B026FF]/90"
+                onClick={() => onCheckout()}
+                disabled={isProcessing}
+              >
+                <CreditCard className="mr-2 h-5 w-5" />
+                {isProcessing
+                  ? "Processing..."
+                  : `Pay with ${
+                      paymentMethod === "razorpay" ? "Razorpay" : "PayPal"
+                    }`}
+              </Button>
+            </SignedIn>
+            <SignedOut>
+              <Button
+                className="w-full min-w- py-6 rounded-full font-bold text-lg bg-gradient-to-r from-[#00F0FF] to-[#B026FF] hover:from-[#00F0FF]/90 hover:to-[#B026FF]/90"
+                onClick={() => {
+                  router.push("/sign-in?redirect_to=/pricing");
+                }}
+              >
+                Sign-in
+              </Button>
+            </SignedOut>
+            <p className="text-xs text-gray-400 text-center px-4">
+              Your subscription will be activated immediately after successful
+              payment. You can cancel anytime from your dashboard.
+            </p>
           </div>
+        </DialogContent>
+        {feedInfo && (
+          <>
+            <div>
+              {step === "phone" && (
+                <AlertDialog defaultOpen>
+                  <AlertDialogContent className="bg-[#0a0a0a]/90 backdrop-blur-lg border border-[#333] rounded-xl max-w-md">
+                    <AlertDialogHeader>
+                      <div className="flex justify-between items-center">
+                        <h3 className="p-16-semibold text-white text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+                          PLEASE ENTER YOUR MOBILE NUMBER
+                        </h3>
+                        <AlertDialogCancel
+                          onClick={() => router.push(`/`)}
+                          className="border-0 p-0 hover:bg-transparent text-gray-400 hover:text-white transition-colors"
+                        >
+                          <XMarkIcon className="size-6 cursor-pointer" />
+                        </AlertDialogCancel>
+                      </div>
+                    </AlertDialogHeader>
 
-          {/* Payment Button */}
-          <Button
-            className="w-full"
-            size="lg"
-            onClick={
-              paymentMethod === "razorpay"
-                ? handleRazorpayPayment
-                : handlePayPalPayment
-            }
-            disabled={isProcessing}
-          >
-            <CreditCard className="mr-2 h-4 w-4" />
-            {isProcessing
-              ? "Processing..."
-              : `Pay with ${
-                  paymentMethod === "razorpay" ? "Razorpay" : "PayPal"
-                }`}
-          </Button>
+                    <form
+                      onSubmit={handlePhoneSubmit(handlePhoneSubmission)}
+                      className="space-y-6 p-4"
+                    >
+                      <div className="w-full">
+                        <label
+                          htmlFor="MobileNumber"
+                          className="block text-md font-medium text-gray-300 mb-2"
+                        >
+                          Enter Your Phone Number
+                        </label>
+                        <div className="flex items-center justify-start w-full bg-[#1a1a1a]/50 backdrop-blur-sm border border-[#333] rounded-xl overflow-hidden">
+                          <select
+                            value={countryCode}
+                            onChange={(e) => setCountryCode(e.target.value)}
+                            className="bg-transparent text-white p-3 border-r border-[#333] focus:outline-none focus:ring-2 focus:ring-[#00F0FF]"
+                          >
+                            {countryCodes.map((countryCode, index) => (
+                              <option
+                                key={index}
+                                className="bg-[#1a1a1a] text-gray-300"
+                                value={countryCode.code}
+                              >
+                                {countryCode.code}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            id="MobileNumber"
+                            type="text"
+                            {...registerPhone("MobileNumber")}
+                            className="w-full bg-transparent py-3 px-4 text-white placeholder:text-gray-500 focus:outline-none"
+                            placeholder="Phone number"
+                          />
+                        </div>
+                        {phoneErrors.MobileNumber && (
+                          <p className="text-red-400 text-sm mt-2">
+                            {phoneErrors.MobileNumber.message}
+                          </p>
+                        )}
+                      </div>
 
-          <p className="text-xs text-gray-500 text-center">
-            Your subscription will be activated immediately after successful
-            payment. You can cancel anytime from your dashboard.
-          </p>
+                      <div className="flex justify-center">
+                        <button
+                          type="submit"
+                          className={`w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-[#00F0FF] to-[#B026FF] hover:from-[#00F0FF]/90 hover:to-[#B026FF]/90 transition-all ${
+                            isOtpSubmitting
+                              ? "opacity-70 cursor-not-allowed"
+                              : ""
+                          }`}
+                          disabled={isOtpSubmitting}
+                        >
+                          {isOtpSubmitting ? (
+                            <div className="flex items-center justify-center gap-2">
+                              <div className="w-4 h-4 border-t-2 border-white border-solid rounded-full animate-spin"></div>
+                              Sending OTP...
+                            </div>
+                          ) : (
+                            "Send OTP"
+                          )}
+                        </button>
+                      </div>
+                    </form>
+
+                    <AlertDialogDescription className="p-4 text-center text-sm text-gray-400 border-t border-[#333] pt-4">
+                      <span className="text-[#00F0FF]">
+                        IT WILL HELP US TO PROVIDE BETTER SERVICES
+                      </span>
+                    </AlertDialogDescription>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              {step === "otp" && (
+                <OTPVerification
+                  phone={phone}
+                  onVerified={handleOTPVerified}
+                  buyerId={buyerId}
+                />
+              )}
+            </div>
+          </>
+        )}
+      </Dialog>
+      {razorpayMode && (
+        <div>
+          <Script
+            id="razorpay-checkout-js"
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            onLoad={() => handleRazorpayPayment()} // Update state when script loads
+          />
         </div>
-      </DialogContent>
-    </Dialog>
+      )}
+      {paypalMode && (
+        <PayPalScriptProvider options={initialOptions}>
+          <PayPalButtons
+            createSubscription={createSubscription}
+            onApprove={onApprove}
+            onCancel={onCancel}
+            onError={onError}
+          />
+        </PayPalScriptProvider>
+      )}
+    </>
   );
 }
