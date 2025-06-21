@@ -13,7 +13,7 @@ import { DashboardSkeleton } from "@/components/dashboard/DashSkeleton";
 
 const DEMO_USER_ID = "684eb625b30670b468652a10";
 
-export const getLeads = async (): Promise<DashboardData> => {
+const getLeads = async (): Promise<DashboardData> => {
   try {
     await connectToDatabase();
 
