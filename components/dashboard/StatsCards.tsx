@@ -1,11 +1,11 @@
 "use client";
 
-import { Lead } from "@/types";
+import { LeadType } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, Users, CheckCircle, Clock } from "lucide-react";
 
 interface StatsCardsProps {
-  leads: Lead[];
+  leads: LeadType[];
 }
 
 export default function StatsCards({ leads }: StatsCardsProps) {
