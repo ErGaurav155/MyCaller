@@ -53,7 +53,6 @@ export default function HomePage() {
                 </span>
               </div>
             </div>
-
             <Link
               href={"/pricing"}
               className="bg-[#0A0A0A]/60 backdrop-blur-sm border border-[#00F0FF]/20 rounded-lg p-6 hover:border-[#00F0FF]/50 transition-all duration-300"
