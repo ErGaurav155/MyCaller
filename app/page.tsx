@@ -10,7 +10,7 @@ import { Footer } from "@/components/shared/Footer";
 import { AboutUs } from "@/components/shared/AboutUs";
 import Link from "next/link";
 import Feature from "@/components/shared/Feature";
-import ContactForm from "@/components/shared/Contactus";
+import ContactForm from "@/components/shared/ContactUs";
 
 export default function HomePage() {
   return (
