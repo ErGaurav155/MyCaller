@@ -286,14 +286,14 @@ export const Pricing = () => {
                 {[
                   {
                     feature: "AI-handled calls per month",
-                    starter: "500",
-                    professional: "2,000",
+                    starter: "225",
+                    professional: "500",
                     enterprise: "Unlimited",
                   },
                   {
                     feature: "Lead storage",
                     starter: "100",
-                    professional: "500",
+                    professional: "225",
                     enterprise: "Unlimited",
                   },
                   {
@@ -334,12 +334,6 @@ export const Pricing = () => {
                   },
                   {
                     feature: "Multi-language support",
-                    starter: "✗",
-                    professional: "✗",
-                    enterprise: "✓",
-                  },
-                  {
-                    feature: "API access",
                     starter: "✗",
                     professional: "✗",
                     enterprise: "✓",

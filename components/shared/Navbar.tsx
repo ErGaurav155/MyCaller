@@ -2,10 +2,12 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 export function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const router = useRouter();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -94,17 +96,14 @@ export function NavBar() {
       >
         <div className="container mx-auto px-4 py-4 flex flex-col space-y-4 backdrop-blur-lg">
           {[
-            { id: "home", label: "Home" },
-            { id: "assistant", label: "AI Call Assistant" },
-            { id: "features", label: "Features" },
+            { id: "Features", label: "Features" },
             { id: "pricing", label: "Pricing" },
-            { id: "reviews", label: "Reviews" },
-            { id: "about", label: "About Us" },
-            { id: "contact", label: "Contact Us" },
+            { id: "Review", label: "Reviews" },
+            { id: "contactUs", label: "Contact Us" },
           ].map((item) => (
             <Link
               key={item.id}
-              href={`#${item.id}`}
+              href={`/${item.id}`}
               className={`text-white hover:text-[#00F0FF] transition-colors cursor-pointer `}
               onClick={() => handleNavClick(item.id)}
             >
@@ -112,22 +111,26 @@ export function NavBar() {
             </Link>
           ))}
           <SignedOut>
-            <Link
-              href={"/sign-in"}
-              className="px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+            <Button
+              onClick={() => {
+                router.push("/sign-in");
+              }}
+              className="px-4 py-2  bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-white font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >
               <i className="fas fa-user-astronaut mr-2 self-center"></i>
               Login
-            </Link>
+            </Button>
           </SignedOut>
           <SignedIn>
-            <Link
-              href={"/sign-in"}
-              className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+            <Button
+              onClick={() => {
+                router.push("/dashboard");
+              }}
+              className="flex px-4 py-2  bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-white font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >
               <i className="fas fa-user-astronaut mr-2 self-center"></i>
               Dashboard
-            </Link>
+            </Button>
           </SignedIn>
         </div>
       </div>
