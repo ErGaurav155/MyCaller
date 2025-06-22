@@ -1,4 +1,3 @@
-// components/OTPVerification.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -92,6 +91,9 @@ export default function OTPVerification({
   return (
     <AlertDialog defaultOpen>
       <AlertDialogContent className="bg-[#0a0a0a]/90 backdrop-blur-lg border border-[#333] rounded-xl max-w-md">
+        <AlertDialogTitle className="text-pink-400">
+          Otp Verification
+        </AlertDialogTitle>
         <AlertDialogHeader>
           <div className="flex justify-between items-center">
             <h3 className="p-16-semibold text-white text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
@@ -105,7 +107,6 @@ export default function OTPVerification({
             </AlertDialogCancel>
           </div>
         </AlertDialogHeader>
-
         <form
           onSubmit={handleSubmit(handleOTPSubmit)}
           className="space-y-6 p-4"
@@ -153,7 +154,6 @@ export default function OTPVerification({
             </button>
           </div>
         </form>
-
         <AlertDialogDescription className="p-4 text-center text-sm text-gray-400 border-t border-[#333] pt-4">
           <span className="text-[#00F0FF]">
             IT WILL HELP US TO PROVIDE BETTER SERVICES

@@ -403,6 +403,9 @@ export default function PaymentModal({
               {step === "phone" && (
                 <AlertDialog defaultOpen>
                   <AlertDialogContent className="bg-[#0a0a0a]/90 backdrop-blur-lg border border-[#333] rounded-xl max-w-md">
+                    <AlertDialogTitle className="text-pink-400">
+                      Otp Verification
+                    </AlertDialogTitle>
                     <AlertDialogHeader>
                       <div className="flex justify-between items-center">
                         <h3 className="p-16-semibold text-white text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
