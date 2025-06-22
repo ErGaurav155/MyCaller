@@ -110,8 +110,8 @@ export const Pricing = () => {
       } else {
         setLoading(false);
       }
-      fetchUserData();
     };
+    fetchUserData();
   }, [userId, router]);
 
   return (
