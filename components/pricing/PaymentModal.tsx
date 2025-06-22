@@ -88,7 +88,7 @@ export default function PaymentModal({
   const [phone, setPhone] = useState("");
 
   const [feedInfo, setFeedInfo] = useState(false);
-  const [step, setStep] = useState<"phone" | "otp" | "payment">("phone");
+  const [step, setStep] = useState<"phone" | "otp" | "payment" | null>(null);
   const router = useRouter();
   const {
     handleSubmit: handlePhoneSubmit,
@@ -276,6 +276,7 @@ export default function PaymentModal({
   };
   const onCheckout = async () => {
     setFeedInfo(true);
+    setStep("phone");
   };
   return (
     <>
@@ -503,24 +504,28 @@ export default function PaymentModal({
           </>
         )}
       </Dialog>
-      {razorpayMode && (
-        <div>
-          <Script
-            id="razorpay-checkout-js"
-            src="https://checkout.razorpay.com/v1/checkout.js"
-            onLoad={() => handleRazorpayPayment()} // Update state when script loads
-          />
-        </div>
-      )}
-      {paypalMode && (
-        <PayPalScriptProvider options={initialOptions}>
-          <PayPalButtons
-            createSubscription={createSubscription}
-            onApprove={onApprove}
-            onCancel={onCancel}
-            onError={onError}
-          />
-        </PayPalScriptProvider>
+      {step === "payment" && (
+        <>
+          {razorpayMode && (
+            <div>
+              <Script
+                id="razorpay-checkout-js"
+                src="https://checkout.razorpay.com/v1/checkout.js"
+                onLoad={() => handleRazorpayPayment()} // Update state when script loads
+              />
+            </div>
+          )}
+          {paypalMode && (
+            <PayPalScriptProvider options={initialOptions}>
+              <PayPalButtons
+                createSubscription={createSubscription}
+                onApprove={onApprove}
+                onCancel={onCancel}
+                onError={onError}
+              />
+            </PayPalScriptProvider>
+          )}
+        </>
       )}
     </>
   );
