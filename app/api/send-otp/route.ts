@@ -19,8 +19,10 @@ export async function POST(req: NextRequest) {
 
     const otpResponse = await client.verify.v2
       .services(verifySid)
-      .verifications.create({ to: fullPhoneNumber, channel: "sms" });
-
+      .verifications.create({
+        to: fullPhoneNumber,
+        channel: "sms",
+      });
     return NextResponse.json({
       message: "OTP sent successfully",
       sid: otpResponse.sid,
