@@ -430,7 +430,7 @@ export default function PaymentModal({
                   phone={phone}
                   onVerified={() => {
                     setStep(null);
-                    onClose;
+                    onClose();
                     handleRazorpayPayment();
                   }}
                   buyerId={buyerId}
