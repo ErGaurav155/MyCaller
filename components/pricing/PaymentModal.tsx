@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,7 @@ import {
 import OTPVerification from "../shared/OTPVerification";
 import { countryCodes } from "@/constant";
 import Script from "next/script";
+import { getRazerpayPlanInfo } from "@/lib/action/plan.action";
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -64,7 +65,6 @@ export default function PaymentModal({
   buyerId,
 }: PaymentModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [razorpayMode, setRazorpayMode] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "paypal">(
     "razorpay"
@@ -75,7 +75,7 @@ export default function PaymentModal({
 
   const [feedInfo, setFeedInfo] = useState(false);
   const [step, setStep] = useState<"phone" | "otp" | null>(null);
-  const [dialogOpen, setDialogOpen] = useState<boolean>(isOpen);
+  const razorpayplanId = useRef<string | null>(null);
   const router = useRouter();
   const {
     handleSubmit: handlePhoneSubmit,
@@ -110,7 +110,7 @@ export default function PaymentModal({
 
   const price =
     billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice;
-  const usdPrice = Math.round(price * 0.012); // Approximate INR to USD conversion
+  const inrPrice = Math.round(price * 87); // Approximate INR to USD conversion
 
   const handleRazorpayPayment = async () => {
     setIsProcessing(true);
@@ -120,7 +120,7 @@ export default function PaymentModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: price,
-          productId: "plan_QIxhCw8LvDCdMa",
+          productId: razorpayplanId.current,
           billingCycle,
           buyerId,
         }),
@@ -133,7 +133,7 @@ export default function PaymentModal({
       const options = {
         key_id: process.env.RAZORPAY_KEY_ID!,
         amount: price * 100,
-        currency: "INR",
+        currency: "USD",
         name: "GK Services",
         description: `${plan.name} Plan - ${billingCycle}`,
         subscription_id: subscriptionCreate.subsId,
@@ -210,8 +210,29 @@ export default function PaymentModal({
   };
 
   const onCheckout = async () => {
-    setFeedInfo(true);
-    setStep("phone");
+    try {
+      // Fetch plan data
+      const info = await getRazerpayPlanInfo(plan.id);
+      if (!info.monthlyPlanId || !info.yearlyPlanId) {
+        router.push("/");
+        throw new Error("Plan not found");
+      }
+
+      if (billingCycle === "monthly") {
+        razorpayplanId.current = info.monthlyPlanId;
+      } else if (billingCycle === "yearly") {
+        razorpayplanId.current = info.yearlyPlanId;
+      } else {
+        router.push("/");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error fetching plan info:", error);
+      return false;
+    } finally {
+      setFeedInfo(true);
+      setStep("phone");
+    }
   };
   return (
     <>
@@ -236,7 +257,7 @@ export default function PaymentModal({
               </div>
               <div className="flex justify-between items-center text-xl font-bold mt-4">
                 <span className="text-gray-300">Total</span>
-                <span className="text-white">₹{price.toLocaleString()}</span>
+                <span className="text-white">${price.toLocaleString()}</span>
               </div>
               {billingCycle === "yearly" && (
                 <p className="text-sm text-green-400 mt-3 font-medium">
@@ -252,8 +273,8 @@ export default function PaymentModal({
             {/* Payment Method Selection */}
             <div className="space-y-4">
               <h3 className="font-medium text-gray-300 text-center">
-                Price in <span className="text-[#00F0FF]">INR</span> and{" "}
-                <span className="text-[#B026FF]">USD</span>
+                Price in <span className="text-[#00F0FF]">USD</span> and{" "}
+                <span className="text-[#B026FF]">INR</span>
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
@@ -268,14 +289,14 @@ export default function PaymentModal({
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-[#00F0FF]" />
                     <span className="text-xs font-medium text-gray-300">
-                      India
+                      International
                     </span>
                   </div>
                   <span className="text-md font-medium text-white mt-2">
                     Razorpay
                   </span>
                   <span className="font-bold text-white">
-                    ₹{price.toLocaleString()}
+                    ${price.toLocaleString()}
                   </span>
                 </div>
 
@@ -290,14 +311,14 @@ export default function PaymentModal({
                   <div className="flex items-center gap-2">
                     <Globe className="h-4 w-4 text-[#B026FF]" />
                     <span className="text-xs font-medium text-gray-300">
-                      International
+                      India
                     </span>
                   </div>
                   <span className="text-md font-medium text-white mt-2">
                     Razorpay
                   </span>
                   <span className="font-bold text-white">
-                    ${usdPrice.toLocaleString()}
+                    ₹{inrPrice.toLocaleString()}
                   </span>
                 </div>
               </div>

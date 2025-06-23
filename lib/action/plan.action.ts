@@ -55,3 +55,18 @@ const plans = [
 //     console.error("❌ Error seeding plans:", error);
 //   }
 // }
+export const getRazerpayPlanInfo = async (productId: string) => {
+  try {
+    await connectToDatabase(); // Ensure database connection
+
+    const plan = await Plan.findOne({ productId });
+    if (!plan) {
+      console.log("plan not found");
+      throw new Error(`Plan with productId ${productId} not found.`);
+    }
+    return JSON.parse(JSON.stringify(plan));
+  } catch (error: any) {
+    console.error("Error retrieving plan info:", error.message);
+    throw new Error("Failed to retrieve plan info.");
+  }
+};

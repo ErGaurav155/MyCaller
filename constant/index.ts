@@ -1,3 +1,5 @@
+import { PricingPlan } from "@/types";
+
 export const countryCodes = [
   { code: "+1", country: "🇺🇸 United States" },
   { code: "+1", country: "🇨🇦 Canada" },
@@ -101,4 +103,57 @@ export const countryCodes = [
   { code: "+377", country: "🇲🇨 Monaco" },
   { code: "+378", country: "🇸🇲 San Marino" },
   { code: "+379", country: "🇻🇦 Vatican City" },
+];
+export const pricingPlans: PricingPlan[] = [
+  {
+    id: "Starter-AI-Customer-Support-Agent",
+    name: "Starter",
+    description: "Perfect for small businesses ",
+    monthlyPrice: 99,
+    yearlyPrice: 999,
+    callLimit: 225,
+    leadLimit: 100,
+    features: [
+      "225  calls / month",
+      "Basic  AI responses",
+      "Email notifications",
+      "24/7 support",
+      "Dashboard access",
+    ],
+  },
+  {
+    id: "Business-AI-Customer-Support-Agent",
+    name: "Professional",
+    description: "Ideal for growing businesses",
+    monthlyPrice: 199,
+    yearlyPrice: 1999,
+    callLimit: 500,
+    leadLimit: 225,
+    popular: true,
+    features: [
+      "500 calls / month",
+      "Custom AI responses",
+      "SMS + Email notifications",
+      "24/7 premium support",
+
+      "Advanced analytics",
+      "Dashboard access",
+    ],
+  },
+  {
+    id: "Enterprise-AI-Customer-Support-Agent",
+    name: "Enterprise",
+    description: "For high-volume businesses",
+    monthlyPrice: 299,
+    yearlyPrice: 2999,
+    callLimit: -1,
+    leadLimit: -1,
+    features: [
+      "Unlimited calls",
+      "Custom AI responses",
+      "SMS + Email notifications",
+      "24/7 premium support",
+      "Dashboard access",
+    ],
+  },
 ];

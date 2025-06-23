@@ -1,80 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useRef, useState } from "react";
+
 import { Switch } from "@/components/ui/switch";
-import {
-  Phone,
-  ArrowLeft,
-  Check,
-  Star,
-  Users,
-  Headphones,
-  Shield,
-  Zap,
-} from "lucide-react";
-import PricingCard from "@/components/pricing/PricingCard";
+import { Check, Zap } from "lucide-react";
 import PaymentModal from "@/components/pricing/PaymentModal";
-import { PricingPlan } from "@/types";
-import { useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { getUserById } from "@/lib/action/user.actions";
 import { useRouter } from "next/navigation";
-
-const pricingPlans: PricingPlan[] = [
-  {
-    id: "starter",
-    name: "Starter",
-    description: "Perfect for small businesses ",
-    monthlyPrice: 2999,
-    yearlyPrice: 29990,
-    callLimit: 500,
-    leadLimit: 100,
-    features: [
-      "225  calls / month",
-      "Basic  AI responses",
-      "Email notifications",
-      "24/7 support",
-      "Dashboard access",
-    ],
-  },
-  {
-    id: "professional",
-    name: "Professional",
-    description: "Ideal for growing businesses",
-    monthlyPrice: 5999,
-    yearlyPrice: 59990,
-    callLimit: 2000,
-    leadLimit: 500,
-    popular: true,
-    features: [
-      "500 calls / month",
-      "Custom AI responses",
-      "SMS + Email notifications",
-      "24/7 premium support",
-
-      "Advanced analytics",
-      "Dashboard access",
-    ],
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    description: "For high-volume businesses",
-    monthlyPrice: 12999,
-    yearlyPrice: 129990,
-    callLimit: -1,
-    leadLimit: -1,
-    features: [
-      "Unlimited calls",
-      "Custom AI responses",
-      "SMS + Email notifications",
-      "24/7 premium support",
-      "Dashboard access",
-    ],
-  },
-];
+import { pricingPlans } from "@/constant";
+import { PricingPlan } from "@/types";
 
 export const Pricing = () => {
   const { userId } = useAuth();
@@ -85,16 +20,23 @@ export const Pricing = () => {
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [buyerId, setBuyerId] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  const handleSubscribe = (plan: PricingPlan, cycle: "monthly" | "yearly") => {
+  const [islogged, setIslogged] = useState(false);
+
+  const handleSubscribe = async (
+    plan: PricingPlan,
+    cycle: "monthly" | "yearly"
+  ) => {
     setSelectedPlan(plan);
     setIsPaymentModalOpen(true);
   };
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (userId) {
+      //fetch user data
+      if (!userId) {
+        setIslogged(false);
+      } else {
         try {
           const buyer = await getUserById(userId);
           if (!buyer) {
@@ -102,13 +44,10 @@ export const Pricing = () => {
             return;
           }
           setBuyerId(buyer._id);
+          setIslogged(true);
         } catch (error) {
           console.error("Error fetching user info:", error);
-        } finally {
-          setLoading(false);
         }
-      } else {
-        setLoading(false);
       }
     };
     fetchUserData();
@@ -171,7 +110,7 @@ export const Pricing = () => {
                 className={`relative group rounded-lg  backdrop-blur-sm border transition-all duration-300 ${
                   plan.popular
                     ? "scale-105 z-10 border-[#B026FF]/30 hover:border-[#B026FF]"
-                    : plan.id === "starter"
+                    : plan.id === "Starter-AI-Customer-Support-Agent"
                     ? "border-[#00F0FF]/20 hover:border-[#00F0FF]"
                     : "border-[#FF2E9F]/20 hover:border-[#FF2E9F]"
                 }`}
@@ -209,7 +148,7 @@ export const Pricing = () => {
                           : "text-[#FF2E9F]"
                       }`}
                     >
-                      ₹
+                      ${" "}
                       {billingCycle === "monthly"
                         ? plan.monthlyPrice.toFixed(0)
                         : plan.yearlyPrice.toFixed(0)}
@@ -234,18 +173,34 @@ export const Pricing = () => {
                       </li>
                     ))}
                   </ul>
-                  <button
-                    onClick={() => handleSubscribe(plan, billingCycle)}
-                    className={`w-full py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap ${
-                      plan.popular
-                        ? "bg-gradient-to-r from-[#B026FF] to-[#FF2E9F]"
-                        : plan.id === "starter"
-                        ? "bg-gradient-to-r from-[#00F0FF]/80 to-[#00F0FF]"
-                        : "bg-gradient-to-r from-[#FF2E9F]/80 to-[#FF2E9F]"
-                    } text-black`}
-                  >
-                    Purchase Now
-                  </button>
+                  <SignedOut>
+                    <button
+                      onClick={() => router.push("/sign-in")}
+                      className={`w-full py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap ${
+                        plan.popular
+                          ? "bg-gradient-to-r from-[#B026FF] to-[#FF2E9F]"
+                          : plan.id === "starter"
+                          ? "bg-gradient-to-r from-[#00F0FF]/80 to-[#00F0FF]"
+                          : "bg-gradient-to-r from-[#FF2E9F]/80 to-[#FF2E9F]"
+                      } text-black`}
+                    >
+                      Login
+                    </button>
+                  </SignedOut>
+                  <SignedIn>
+                    <button
+                      onClick={() => handleSubscribe(plan, billingCycle)}
+                      className={`w-full py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap ${
+                        plan.popular
+                          ? "bg-gradient-to-r from-[#B026FF] to-[#FF2E9F]"
+                          : plan.id === "starter"
+                          ? "bg-gradient-to-r from-[#00F0FF]/80 to-[#00F0FF]"
+                          : "bg-gradient-to-r from-[#FF2E9F]/80 to-[#FF2E9F]"
+                      } text-black`}
+                    >
+                      Purchase Now
+                    </button>
+                  </SignedIn>
                 </div>
               </div>
             ))}
@@ -393,13 +348,15 @@ export const Pricing = () => {
       </section>
 
       {/* Payment Modal */}
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        plan={selectedPlan}
-        billingCycle={billingCycle}
-        buyerId={buyerId}
-      />
+      {islogged && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          plan={selectedPlan}
+          billingCycle={billingCycle}
+          buyerId={buyerId}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
@@ -31,7 +31,7 @@ export function NavBar() {
           </h1>
         </Link>
         {/* Desktop Orbital Navigation */}
-        <nav className="hidden md:flex justify-evenly items-center space-x-8">
+        <nav className="hidden md:flex justify-evenly items-center space-x-5 lg:space-x-8 ">
           {[
             { id: "/Features", label: "Features" },
             { id: "/pricing", label: "Pricing" },
@@ -53,7 +53,7 @@ export function NavBar() {
         {/* Auth & Language Buttons */}
         <div className="flex items-center space-x-4">
           {/* Language Selector */}
-          <div className="relative">
+          <div className="hidden  lg:block  relative">
             <button className="flex items-center space-x-1 text-sm text-[#B026FF] hover:text-[#FF2E9F] transition-colors cursor-pointer whitespace-nowrap !rounded-button">
               <i className="fas fa-globe text-[#00F0FF]"></i>
               <span>EN</span>
@@ -73,11 +73,14 @@ export function NavBar() {
           <SignedIn>
             <Link
               href={"/dashboard"}
-              className="hidden md:flex px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
+              className="hidden md:flex px-2 lg:px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >
               <i className="fas fa-user-astronaut mr-2 self-center"></i>
               Dashboard
             </Link>
+            <div className="block text-white  ">
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </SignedIn>
           {/* Mobile Menu Button */}
           <button
