@@ -18,7 +18,6 @@ import { Separator } from "@/components/ui/separator";
 import { CreditCard, MapPin, Globe } from "lucide-react";
 import { PricingPlan } from "@/types";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { createRazerPaySubscription } from "@/lib/action/subscription.action";
@@ -32,13 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  PayPalButtons,
-  PayPalButtonsComponentProps,
-  PayPalScriptProvider,
-  ReactPayPalScriptOptions,
-} from "@paypal/react-paypal-js";
-import { createPayPalSubscription } from "@/lib/action/subscription.action";
+
 import OTPVerification from "../shared/OTPVerification";
 import { countryCodes } from "@/constant";
 import Script from "next/script";
@@ -49,13 +42,7 @@ interface PaymentModalProps {
   billingCycle: "monthly" | "yearly";
   buyerId: string;
 }
-interface CartPayProps {
-  paypalplanId: string;
-  productId: string;
-  buyerId: string;
-  billingCycle: string;
-  amount: number;
-}
+
 declare global {
   interface Window {
     Razorpay: any;
@@ -77,7 +64,6 @@ export default function PaymentModal({
   buyerId,
 }: PaymentModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paypalMode, setPaypalMode] = useState(false);
   const [razorpayMode, setRazorpayMode] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "paypal">(
@@ -126,10 +112,10 @@ export default function PaymentModal({
   const usdPrice = Math.round(price * 0.012); // Approximate INR to USD conversion
   const setRazorpayPayment = async () => {
     setRazorpayMode(true);
+    setStep("payment");
   };
   const handleRazorpayPayment = async () => {
     setIsProcessing(true);
-
     try {
       const response = await fetch("/api/payments/razorpay/subscription", {
         method: "POST",
@@ -224,56 +210,7 @@ export default function PaymentModal({
       setIsProcessing(false);
     }
   };
-  const NEXT_PUBLIC_PAYPAL_CLIENT_ID =
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
 
-  const initialOptions: ReactPayPalScriptOptions = {
-    clientId: NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-    vault: true,
-    intent: "subscription",
-  };
-  const setPaypalPayment = async () => {
-    setPaypalMode(true);
-  };
-  const handlePayPalPayment = async () => {};
-  const createSubscription: PayPalButtonsComponentProps["createSubscription"] =
-    async (data, actions) => {
-      const subscription = await actions.subscription.create({
-        plan_id: plan.id,
-        custom_id: buyerId,
-      });
-
-      return subscription;
-    };
-  const productId = plan.id;
-  const onApprove: PayPalButtonsComponentProps["onApprove"] = async (data) => {
-    try {
-      if (!data.subscriptionID) {
-        throw new Error("Subscription ID not found");
-      }
-
-      await createPayPalSubscription(
-        buyerId,
-        productId,
-        data.subscriptionID,
-        billingCycle
-      );
-
-      router.push("/dashboard");
-    } catch (error) {
-      window.location.assign("/");
-    }
-  };
-  const onCancel: PayPalButtonsComponentProps["onCancel"] = () => {
-    window.location.assign("/");
-  };
-
-  const onError: PayPalButtonsComponentProps["onError"] = (err) => {
-    window.location.assign("/");
-  };
-  const handleOTPVerified = () => {
-    paymentMethod === "razorpay" ? setRazorpayPayment : handlePayPalPayment;
-  };
   const onCheckout = async () => {
     setFeedInfo(true);
     setStep("phone");
@@ -317,7 +254,8 @@ export default function PaymentModal({
             {/* Payment Method Selection */}
             <div className="space-y-4">
               <h3 className="font-medium text-gray-300 text-center">
-                Choose Payment Method
+                Price in <span className="text-[#00F0FF]">INR</span> and{" "}
+                <span className="text-[#B026FF]">USD</span>
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
@@ -358,7 +296,7 @@ export default function PaymentModal({
                     </span>
                   </div>
                   <span className="text-md font-medium text-white mt-2">
-                    PayPal
+                    Razorpay
                   </span>
                   <span className="font-bold text-white">
                     ${usdPrice.toLocaleString()}
@@ -375,11 +313,7 @@ export default function PaymentModal({
                 disabled={isProcessing}
               >
                 <CreditCard className="mr-2 h-5 w-5" />
-                {isProcessing
-                  ? "Processing..."
-                  : `Pay with ${
-                      paymentMethod === "razorpay" ? "Razorpay" : "PayPal"
-                    }`}
+                {isProcessing ? "Processing..." : `Pay with Razorpay`}
               </Button>
             </SignedIn>
             <SignedOut>
@@ -496,7 +430,7 @@ export default function PaymentModal({
               {step === "otp" && (
                 <OTPVerification
                   phone={phone}
-                  onVerified={handleOTPVerified}
+                  onVerified={() => setRazorpayPayment()}
                   buyerId={buyerId}
                 />
               )}
@@ -514,16 +448,6 @@ export default function PaymentModal({
                 onLoad={() => handleRazorpayPayment()} // Update state when script loads
               />
             </div>
-          )}
-          {paypalMode && (
-            <PayPalScriptProvider options={initialOptions}>
-              <PayPalButtons
-                createSubscription={createSubscription}
-                onApprove={onApprove}
-                onCancel={onCancel}
-                onError={onError}
-              />
-            </PayPalScriptProvider>
           )}
         </>
       )}
