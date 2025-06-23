@@ -74,7 +74,8 @@ export default function PaymentModal({
   const [phone, setPhone] = useState("");
 
   const [feedInfo, setFeedInfo] = useState(false);
-  const [step, setStep] = useState<"phone" | "otp" | "payment" | null>(null);
+  const [step, setStep] = useState<"phone" | "otp" | null>(null);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(isOpen);
   const router = useRouter();
   const {
     handleSubmit: handlePhoneSubmit,
@@ -110,10 +111,7 @@ export default function PaymentModal({
   const price =
     billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice;
   const usdPrice = Math.round(price * 0.012); // Approximate INR to USD conversion
-  const setRazorpayPayment = async () => {
-    setRazorpayMode(true);
-    setStep("payment");
-  };
+
   const handleRazorpayPayment = async () => {
     setIsProcessing(true);
     try {
@@ -430,7 +428,11 @@ export default function PaymentModal({
               {step === "otp" && (
                 <OTPVerification
                   phone={phone}
-                  onVerified={() => setRazorpayPayment()}
+                  onVerified={() => {
+                    handleRazorpayPayment();
+                    setStep(null);
+                    onClose;
+                  }}
                   buyerId={buyerId}
                 />
               )}
@@ -438,19 +440,12 @@ export default function PaymentModal({
           </>
         )}
       </Dialog>
-      {step === "payment" && (
-        <>
-          {razorpayMode && (
-            <div>
-              <Script
-                id="razorpay-checkout-js"
-                src="https://checkout.razorpay.com/v1/checkout.js"
-                onLoad={() => handleRazorpayPayment()} // Update state when script loads
-              />
-            </div>
-          )}
-        </>
-      )}
+      <div>
+        <Script
+          id="razorpay-checkout-js"
+          src="https://checkout.razorpay.com/v1/checkout.js"
+        />
+      </div>
     </>
   );
 }
