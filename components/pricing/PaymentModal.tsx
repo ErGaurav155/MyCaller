@@ -120,7 +120,7 @@ export default function PaymentModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: price,
-          productId: plan.id,
+          productId: "plan_QIxhCw8LvDCdMa",
           billingCycle,
           buyerId,
         }),
@@ -429,9 +429,9 @@ export default function PaymentModal({
                 <OTPVerification
                   phone={phone}
                   onVerified={() => {
-                    handleRazorpayPayment();
                     setStep(null);
                     onClose;
+                    handleRazorpayPayment();
                   }}
                   buyerId={buyerId}
                 />
