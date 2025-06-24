@@ -17,28 +17,7 @@ const getLeads = async (): Promise<DashboardData> => {
   try {
     await connectToDatabase();
 
-    const user = await User.findOneAndUpdate(
-      { _id: DEMO_USER_ID },
-      {
-        $setOnInsert: {
-          name: "Demo Business Owner",
-          email: "demo@business.com",
-          phone: "+1234567890",
-          twilioNumber: "+1987654321",
-          isActive: true,
-          aiSettings: {
-            greeting: "Hello! Our team is busy, but I'm here to help.",
-            questions: [],
-            businessInfo: "Demo business",
-          },
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-        setDefaultsOnInsert: true,
-      }
-    );
+    const user = await User.findOne({ _id: DEMO_USER_ID });
 
     const leads = await Lead.find({ businessOwner: DEMO_USER_ID })
       .sort({ createdAt: -1 })

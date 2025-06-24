@@ -89,7 +89,8 @@ function DashboardContent({ initialData }: { initialData: DashboardData }) {
 
         <div className="space-y-6">
           <PhoneNumberCard
-            phoneNumber={user.twilioNumber!}
+            twilioNumber={user.twilioNumber!}
+            phoneNumber={user.phone}
             isActive={user.isActive}
           />
 

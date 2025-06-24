@@ -42,6 +42,7 @@ interface PaymentModalProps {
   plan: PricingPlan | null;
   billingCycle: "monthly" | "yearly";
   buyerId: string;
+  isSubscribed: boolean;
 }
 
 declare global {
@@ -63,6 +64,7 @@ export default function PaymentModal({
   plan,
   billingCycle,
   buyerId,
+  isSubscribed,
 }: PaymentModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -326,14 +328,20 @@ export default function PaymentModal({
 
             {/* Payment Button */}
             <SignedIn>
-              <Button
-                className="w-full py-6 rounded-full font-bold text-lg bg-gradient-to-r from-[#00F0FF] to-[#B026FF] hover:from-[#00F0FF]/90 hover:to-[#B026FF]/90"
-                onClick={() => onCheckout()}
-                disabled={isProcessing}
-              >
-                <CreditCard className="mr-2 h-5 w-5" />
-                {isProcessing ? "Processing..." : `Pay with Razorpay`}
-              </Button>
+              {isSubscribed ? (
+                <Button className="w-full py-6 rounded-full font-bold text-lg bg-gradient-to-r from-[#33e49d] to-[#044624] hover:from-[#79b59b]/90 hover:to-[#30d472]/90">
+                  Subscribed
+                </Button>
+              ) : (
+                <Button
+                  className="w-full py-6 rounded-full font-bold text-lg bg-gradient-to-r from-[#00F0FF] to-[#B026FF] hover:from-[#00F0FF]/90 hover:to-[#B026FF]/90"
+                  onClick={() => onCheckout()}
+                  disabled={isProcessing}
+                >
+                  <CreditCard className="mr-2 h-5 w-5" />
+                  {isProcessing ? "Processing..." : `Pay with Razorpay`}
+                </Button>
+              )}
             </SignedIn>
             <SignedOut>
               <Button
@@ -345,10 +353,16 @@ export default function PaymentModal({
                 Sign-in
               </Button>
             </SignedOut>
-            <p className="text-xs text-gray-400 text-center px-4">
-              Your subscription will be activated immediately after successful
-              payment. You can cancel anytime from your dashboard.
-            </p>
+            {!isSubscribed ? (
+              <p className="text-xs text-gray-400 text-center px-4">
+                Your subscription will be activated immediately after successful
+                payment. You can cancel anytime from your dashboard.
+              </p>
+            ) : (
+              <p className="text-xs text-gray-400 text-center px-4">
+                You had already take one of those subscription.
+              </p>
+            )}
           </div>
         </DialogContent>
         {feedInfo && (

@@ -10,6 +10,7 @@ import { getUserById } from "@/lib/action/user.actions";
 import { useRouter } from "next/navigation";
 import { pricingPlans } from "@/constant";
 import { PricingPlan } from "@/types";
+import { getSubscriptionInfo } from "@/lib/action/subscription.action";
 
 export const Pricing = () => {
   const { userId } = useAuth();
@@ -20,7 +21,7 @@ export const Pricing = () => {
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [buyerId, setBuyerId] = useState("");
-
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [islogged, setIslogged] = useState(false);
 
   const handleSubscribe = async (
@@ -29,6 +30,16 @@ export const Pricing = () => {
   ) => {
     setSelectedPlan(plan);
     setIsPaymentModalOpen(true);
+    if (!userId) {
+      setIsSubscribed(false);
+    } else {
+      const isSubscribed = getSubscriptionInfo(userId);
+      if (!isSubscribed) {
+        setIsSubscribed(false);
+      } else {
+        setIsSubscribed(true);
+      }
+    }
   };
 
   useEffect(() => {
@@ -355,6 +366,7 @@ export const Pricing = () => {
           plan={selectedPlan}
           billingCycle={billingCycle}
           buyerId={buyerId}
+          isSubscribed={isSubscribed}
         />
       )}
     </div>

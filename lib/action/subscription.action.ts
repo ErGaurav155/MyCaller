@@ -12,17 +12,17 @@ const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-function addMonths(date: Date, months: number): Date {
-  const newDate = new Date(date);
-  newDate.setMonth(newDate.getMonth() + months);
-  return newDate;
-}
+// function addMonths(date: Date, months: number): Date {
+//   const newDate = new Date(date);
+//   newDate.setMonth(newDate.getMonth() + months);
+//   return newDate;
+// }
 
-function addYears(date: Date, years: number): Date {
-  const newDate = new Date(date);
-  newDate.setFullYear(newDate.getFullYear() + years);
-  return newDate;
-}
+// function addYears(date: Date, years: number): Date {
+//   const newDate = new Date(date);
+//   newDate.setFullYear(newDate.getFullYear() + years);
+//   return newDate;
+// }
 export async function createRazerPaySubscription(
   buyerId: string,
   productId: string,
@@ -43,7 +43,6 @@ export async function createRazerPaySubscription(
       subscriptionId,
       billingMode: billingCycle,
       subscriptionStatus: "active",
-      mode: "RazorPay",
       subscriptionEndDate: endDate,
     });
     await newSubscription.save();
@@ -83,7 +82,6 @@ export const getSubscriptionInfo = async (userId: string) => {
     // Filter subscriptions by userId and subscriptionStatus
     const subscriptions = await Subscription.find({
       userId,
-
       subscriptionStatus: "active", // Only fetch active subscriptions
     });
 
@@ -166,28 +164,6 @@ export async function setSubsciptionActive(
     return JSON.parse(JSON.stringify(Subs));
   } catch (error) {
     handleError(error);
-  }
-}
-
-async function getAccessToken() {
-  try {
-    const response = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`
-        ).toString("base64")}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ grant_type: "client_credentials" }),
-    });
-
-    const data = await response.json();
-
-    return data.access_token;
-  } catch (error) {
-    console.error("Error fetching PayPal access token:", error);
-    return null;
   }
 }
 

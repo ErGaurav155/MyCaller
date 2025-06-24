@@ -20,11 +20,7 @@ const SubscriptionSchema = new mongoose.Schema(
       enum: ["monthly", "yearly"],
       reuired: true,
     },
-    mode: {
-      type: String,
-      enum: ["PayPal", "RazorPay"],
-      reuired: true,
-    },
+
     subscriptionStatus: {
       type: String,
       enum: ["pending", "active", "expired", "cancelled"],
