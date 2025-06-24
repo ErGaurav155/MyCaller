@@ -69,8 +69,9 @@ export default function HomePage() {
                 </div>
               </div>
               <p className="text-gray-300 mb-4 font-mono text-lg">
-                This is your dedicated AI assistant number. Share it with
-                customers or use it in your marketing materials.
+                This is Demo AI assistant number.Get Yours Share it with
+                customers or use it in your marketing materials like
+                Websites,Social media.
               </p>
             </Link>
           </div>

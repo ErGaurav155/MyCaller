@@ -208,7 +208,7 @@ export const Pricing = () => {
         </div>
       </section>
       {/* Features Comparison */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a]/60 backdrop-blur-sm">
+      <section className="py-16 px-4 sm:px-6 lg:px-8  backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-4">

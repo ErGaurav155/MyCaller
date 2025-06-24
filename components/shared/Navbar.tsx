@@ -17,21 +17,22 @@ export function NavBar() {
 
   return (
     <header className="sticky px-5  lg:px-10  top-0 z-50 backdrop-blur-lg bg-black border-b border-[#00F0FF]/20">
-      <div className=" mx-auto px-4 max-w-7xl py-4 flex justify-between gap-2 items-center">
+      <div className=" mx-auto px-4 max-w-7xl py-4 flex justify-between gap-1 lg:gap-2 items-center">
         {/* Logo */}
         <Link href={"/"} className="flex items-center">
-          <div className="relative w-10 h-10 mr-3">
+          <div className="relative w-7 h-7 lg:w-10 lg:h-10 mr-1 lg:mr-2">
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-pulse"></div>
             <div className="absolute inset-1 rounded-full bg-[#0A0A0A] flex items-center justify-center">
-              <i className="fas fa-satellite text-[#00F0FF]"></i>
+              <i className="fas fa-satellite text-[#00F0FF] h-4 w-4"></i>
             </div>
           </div>
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
-            AiCall<span className="text-[#B026FF]">er</span>
+          <h1 className="text-base lg:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
+            Catch<span className="text-[#B026FF]">Customer</span>
+            <span>Call</span>
           </h1>
         </Link>
         {/* Desktop Orbital Navigation */}
-        <nav className="hidden md:flex justify-evenly items-center space-x-5 lg:space-x-8 ">
+        <nav className="hidden md:flex justify-evenly items-center space-x-5 lg:space-x-8 font-medium text-sm">
           {[
             { id: "/Features", label: "Features" },
             { id: "/pricing", label: "Pricing" },
