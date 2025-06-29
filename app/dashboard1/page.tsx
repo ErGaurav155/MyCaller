@@ -8,6 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,6 +30,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Phone,
   Users,
@@ -39,7 +50,21 @@ import {
   X,
   Plus,
   Trash2,
+  ArrowLeft,
 } from "lucide-react";
+import Link from "next/link";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { countryCodes } from "@/constant";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import OTPVerification from "@/components/shared/OTPVerification";
+import { getUserById } from "@/lib/action/user.actions";
+import {
+  cancelRazorPaySubscription,
+  getSubscription,
+  getSubscriptionInfo,
+} from "@/lib/action/subscription.action";
+import { toast } from "@/hooks/use-toast";
 
 interface Lead {
   id: string;
@@ -85,7 +110,19 @@ interface QuestionTemplate {
   questions: Question[];
   closingMessage: string;
 }
-
+interface Subscription {
+  productId: string;
+  userId: string;
+  subscriptionId: string;
+  subscriptionStatus: string;
+}
+const phoneFormSchema = z.object({
+  MobileNumber: z
+    .string()
+    .min(10, "MOBILE number is required")
+    .regex(/^\d+$/, "invalid number"),
+});
+type PhoneFormData = z.infer<typeof phoneFormSchema>;
 export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [callStats, setCallStats] = useState<CallStats>({
@@ -98,7 +135,146 @@ export default function Dashboard() {
   const [editingNumber, setEditingNumber] = useState<string | null>(null);
   const [newForwardNumber, setNewForwardNumber] = useState<string>("");
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+  const [step, setStep] = useState<"phone" | "otp" | "payment">("payment");
+  const [open, setOpen] = useState(false);
 
+  const [isOtpSubmitting, setIsOtpSubmitting] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [buyer, setBuyer] = useState("");
+  const [countryCode, setCountryCode] = useState("+1");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isImmediateSubmitting, setIsImmediateSubmitting] = useState(false);
+  const [mode, setMode] = useState<"Immediate" | "End-of-term">("End-of-term");
+  const [callerSubscription, setCallerSubscription] = useState(true);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([
+    {
+      productId: "",
+      userId: "",
+      subscriptionId: "",
+      subscriptionStatus: "",
+    },
+  ]);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<
+    string | null
+  >("");
+  const {
+    handleSubmit: handlePhoneSubmit,
+    register: registerPhone,
+    formState: { errors: phoneErrors },
+  } = useForm<PhoneFormData>({
+    resolver: zodResolver(phoneFormSchema),
+  });
+  const handlePhoneSubmission = async (data: PhoneFormData) => {
+    setIsOtpSubmitting(true);
+    try {
+      const fullPhoneNumber = `${countryCode}${data.MobileNumber}`;
+
+      const res = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullPhoneNumber }),
+      });
+      if (res.ok) {
+        setPhone(fullPhoneNumber);
+        setStep("otp");
+      } else {
+        console.error("Failed to send OTP:", res.statusText);
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+    } finally {
+      setIsOtpSubmitting(false);
+    }
+  };
+  const { userId } = useAuth();
+  const router = useRouter();
+  const handleOTPVerified = () => {
+    setStep("payment");
+    router.refresh();
+  };
+  useEffect(() => {
+    async function fetchSubscriptions() {
+      if (!userId) {
+        router.push("/sign-in");
+        return;
+      }
+
+      try {
+        const user = await getUserById(userId);
+        setBuyer(user._id);
+        const response = await getSubscriptionInfo(user._id);
+        if (!response) {
+          setCallerSubscription(false);
+        } else {
+          setCallerSubscription(true);
+          setSubscriptions(
+            response.map((sub: any) => ({
+              productId: sub.productId,
+              userId: sub.userId,
+              subscriptionId: sub.subscriptionId,
+              subscriptionStatus: sub.subscriptionStatus,
+            })) || []
+          );
+        }
+      } catch (error: any) {
+        console.error("Error fetching subscriptions:", error.message);
+      }
+    }
+
+    fetchSubscriptions();
+  }, [userId, router]);
+  const handleCancelSubscription = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    if (!selectedSubscriptionId) return;
+
+    const formData = new FormData(event.currentTarget);
+    const reason = formData.get("reason") as string;
+
+    try {
+      if (mode === "Immediate") {
+        setIsSubmitting(true);
+      } else {
+        setIsImmediateSubmitting(true);
+      }
+      const getSub = await getSubscription(selectedSubscriptionId);
+      if (!getSub) {
+        router.push("/");
+        return;
+      }
+
+      const result = await cancelRazorPaySubscription(
+        selectedSubscriptionId,
+        reason,
+        mode
+      );
+
+      if (result.success) {
+        toast({
+          title: "Subscription cancelled successfully!",
+          description: result.message,
+          duration: 3000,
+          className: "success-toast",
+        });
+        router.refresh();
+        setOpen(false);
+      } else {
+        toast({
+          title: "Subscription cancelled Failed!",
+          description: result.message,
+          duration: 3000,
+          className: "error-toast",
+        });
+      }
+    } catch (error) {
+      console.error("Error cancelling subscription:", error);
+    } finally {
+      setIsSubmitting(false);
+      setIsImmediateSubmitting(false);
+    }
+  };
   // Mock data - replace with real API calls
   useEffect(() => {
     // Simulate loading data
@@ -230,6 +406,8 @@ export default function Dashboard() {
           : num
       )
     );
+    setStep("phone");
+
     setEditingNumber(null);
     setNewForwardNumber("");
   };
@@ -290,35 +468,43 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      {/* Animated Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0A0A0A] to-[#0A0A0A]/95 pointer-events-none"></div>
+    <>
+      <div className="fixed inset-0 bg-[#0a0a0a]/80 bg-gradient-to-br from-[#0A0A0A] via-[#0A0A0A]/90 to-[#0A0A0A]/70 pointer-events-none"></div>
+      <div className="   text-white">
+        {/* Animated Background */}
 
-      {/* Header */}
-      <header className="relative z-10 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-2">
-              <Phone className="h-8 w-8 text-blue-400" />
-              <span className="text-2xl font-bold">CallAI Pro Dashboard</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="outline"
-                className="border-gray-600 text-white hover:bg-gray-800"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
+        {/* Header */}
+        <header className="relative z-10 border-b border-gray-800">
+          <div className="bg-transparent backdrop-blur-sm border-b border-[#333]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-5 w-full">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 text-white border border-gray-400 p-2 rounded-md hover:border-[#00F0FF] transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5 text-white" /> Go Home
+                </Link>
+                <div>
+                  <h1 className="text-xl lg:text-2xl font-bold text-white">
+                    AI Call Assistant Dashboard
+                  </h1>
+                  <p className="text-gray-400 mt-1 font-mono">
+                    Manage your leads and monitor your AI assistant performance
+                  </p>
+                </div>
+                <div className="hidden lg:flex items-center gap-2">
+                  <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-gray-400">System Active</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
-
+        </header>
+      </div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-[#0a0a0a]/60 border border-gray-800">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 ">
+          <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -330,7 +516,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#0a0a0a]/60 border border-gray-800">
+          <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -342,7 +528,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#0a0a0a]/60 border border-gray-800">
+          <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -356,7 +542,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#0a0a0a]/60 border border-gray-800">
+          <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -372,39 +558,64 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="leads" className="space-y-6">
-          <TabsList className="bg-[#0a0a0a]/60 border border-gray-800">
-            <TabsTrigger
-              value="leads"
-              className="data-[state=active]:bg-gray-800"
-            >
-              Leads
-            </TabsTrigger>
-            <TabsTrigger
-              value="numbers"
-              className="data-[state=active]:bg-gray-800"
-            >
-              Twilio Numbers
-            </TabsTrigger>
-            <TabsTrigger
-              value="templates"
-              className="data-[state=active]:bg-gray-800"
-            >
-              Question Templates
-            </TabsTrigger>
-            <TabsTrigger
-              value="analytics"
-              className="data-[state=active]:bg-gray-800"
-            >
-              Analytics
-            </TabsTrigger>
-          </TabsList>
-
+        <Tabs defaultValue="leads" className="space-y-6 ">
+          <div className="flex flex-col md:flex-row items-center justify-between ">
+            <TabsList className="bg-[#0a0a0a]/60 border min-h-max flex flex-wrap max-w-max md:gap-3 text-white border-gray-800">
+              <TabsTrigger
+                value="leads"
+                className="data-[state=active]:bg-[#2d8a55]"
+              >
+                Leads
+              </TabsTrigger>
+              <TabsTrigger
+                value="numbers"
+                className="data-[state=active]:bg-[#2d8a55]"
+              >
+                Numbers
+              </TabsTrigger>
+              <TabsTrigger
+                value="templates"
+                className="data-[state=active]:bg-[#2d8a55]"
+              >
+                Templates
+              </TabsTrigger>
+              <TabsTrigger
+                value="analytics"
+                className="data-[state=active]:bg-[#2d8a55]"
+              >
+                Analytics
+              </TabsTrigger>
+            </TabsList>
+            {callerSubscription ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedSubscriptionId(subscriptions[0].subscriptionId);
+                  setOpen(true);
+                }}
+                className="flex items-center p-1 bg-[#c7361c] border-[#333] text-white hover:bg-[#ca6b58] hover:border-[#ff4d00] hover:text-white px-2"
+              >
+                Cancel Subscription
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  router.push("/pricing");
+                }}
+                className="flex items-center p-1 bg-[#c7361c] border-[#333] text-white hover:bg-[#ca6b58] hover:border-[#ff4d00] hover:text-white px-2"
+              >
+                Take Subscription
+              </Button>
+            )}
+          </div>
           {/* Leads Tab */}
           <TabsContent value="leads" className="space-y-6">
-            <Card className="bg-[#0a0a0a]/60 border border-gray-800">
+            <Card className="bg-[#0a0a0a]/60 border text-white border-gray-800">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center  justify-between">
                   Recent Leads
                   <Badge
                     variant="secondary"
@@ -417,7 +628,7 @@ export default function Dashboard() {
                   Manage and track your AI-generated leads
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-1 md:p-2">
                 <div className="space-y-4">
                   {leads.map((lead) => (
                     <div
@@ -477,19 +688,19 @@ export default function Dashboard() {
                         <p className="text-white">{lead.problem}</p>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row gap-3 md:gap-0 items-center justify-between">
                         <div className="flex items-center text-sm text-gray-400 font-mono">
                           <Calendar className="h-4 w-4 mr-1" />
                           {formatDate(lead.createdAt)}
                         </div>
-                        <div className="flex space-x-2">
+                        <div className="flex space-x-1  md:space-x-2">
                           {lead.status === "pending" && (
                             <Button
                               size="sm"
                               onClick={() =>
                                 handleStatusChange(lead.id, "resolved")
                               }
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-green-600 hover:bg-green-700 text-black"
                             >
                               Mark Resolved
                             </Button>
@@ -497,7 +708,7 @@ export default function Dashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="border-gray-600 text-white hover:bg-gray-800"
+                            className="border-gray-600 bg-[#0a0a0a] text-white hover:bg-gray-700 hover:text-white"
                           >
                             <MessageSquare className="h-4 w-4 mr-1" />
                             WhatsApp
@@ -513,19 +724,19 @@ export default function Dashboard() {
 
           {/* Twilio Numbers Tab */}
           <TabsContent value="numbers" className="space-y-6">
-            <Card className="bg-[#0a0a0a]/60 border border-gray-800">
+            <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
               <CardHeader>
                 <CardTitle>Your Twilio Numbers</CardTitle>
                 <CardDescription className="text-gray-400 font-mono">
                   Manage your AI-powered phone numbers
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-1 md:p-2">
                 <div className="space-y-4">
                   {twilioNumbers.map((number) => (
                     <div
                       key={number.id}
-                      className="border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors"
+                      className="border border-gray-800 rounded-lg p-1 md:p-4 hover:border-gray-700 transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
@@ -547,7 +758,7 @@ export default function Dashboard() {
                               {number.isActive ? "Active" : "Inactive"}
                             </Badge>
                           </div>
-                          <div className="mt-2 flex items-center space-x-2">
+                          <div className="mt-2 flex flex-col sm:flex-row items-center md:space-x-2">
                             <span className="text-sm text-gray-400 font-mono">
                               Forward to:
                             </span>
@@ -559,7 +770,7 @@ export default function Dashboard() {
                                     setNewForwardNumber(e.target.value)
                                   }
                                   placeholder="Enter phone number"
-                                  className="w-48 bg-gray-800 border-gray-700"
+                                  className="w-40 md:w-48 bg-gray-800 border-gray-700"
                                 />
                                 <Button
                                   size="sm"
@@ -577,7 +788,7 @@ export default function Dashboard() {
                                     setEditingNumber(null);
                                     setNewForwardNumber("");
                                   }}
-                                  className="border-gray-600 text-white hover:bg-gray-800"
+                                  className="border-gray-600 text-white bg-[#0a0a0a] hover:bg-gray-700"
                                 >
                                   <X className="h-4 w-4" />
                                 </Button>
@@ -612,21 +823,21 @@ export default function Dashboard() {
 
           {/* Question Templates Tab */}
           <TabsContent value="templates" className="space-y-6">
-            <Card className="bg-[#0a0a0a]/60 border border-gray-800">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  AI Question Templates
+            <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
+              <CardHeader className="p-2 md:p-4">
+                <CardTitle className="flex flex-col gap-3  items-center justify-between">
+                  <h1 className=""> AI Question Templates</h1>
                   <Dialog
                     open={isTemplateDialogOpen}
                     onOpenChange={setIsTemplateDialogOpen}
                   >
                     <DialogTrigger asChild>
-                      <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+                      <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-black">
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Template
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-[#0a0a0a] border-gray-800">
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-[#0a0a0a] border-pink-800 no-scrollbar p-3 md:p-4">
                       <DialogHeader>
                         <DialogTitle className="text-white">
                           Configure AI Questions
@@ -662,7 +873,7 @@ export default function Dashboard() {
                               <Button
                                 onClick={addQuestion}
                                 size="sm"
-                                className="bg-green-600 hover:bg-green-700"
+                                className="bg-green-600 hover:bg-green-700 text-black"
                               >
                                 <Plus className="h-4 w-4 mr-1" />
                                 Add Question
@@ -784,13 +995,13 @@ export default function Dashboard() {
                             <Button
                               variant="outline"
                               onClick={() => setIsTemplateDialogOpen(false)}
-                              className="border-gray-600 text-white hover:bg-gray-800"
+                              className="border-gray-600 text-white hover:text-white hover:bg-gray-800 bg-[#0a0a0a]"
                             >
                               Cancel
                             </Button>
                             <Button
                               onClick={saveTemplate}
-                              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-black"
                             >
                               Save Template
                             </Button>
@@ -804,7 +1015,7 @@ export default function Dashboard() {
                   Configure how your AI assistant interacts with callers
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-2">
                 {selectedTemplate && (
                   <div className="space-y-6">
                     <div>
@@ -824,7 +1035,7 @@ export default function Dashboard() {
                         {selectedTemplate.questions.map((question, index) => (
                           <div
                             key={question.id}
-                            className="flex items-center justify-between bg-gray-800/50 p-3 rounded-lg"
+                            className="flex items-center justify-between flex-col md:flex-row gap-3 md:gap-0 bg-gray-800/50 p-3 rounded-lg"
                           >
                             <div>
                               <span className="text-sm text-gray-400 font-mono">
@@ -868,15 +1079,15 @@ export default function Dashboard() {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-[#0a0a0a]/60 border border-gray-800">
-                <CardHeader>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
+              <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
+                <CardHeader className="p-2">
                   <CardTitle>Monthly Call Stats</CardTitle>
                   <CardDescription className="text-gray-400 font-mono">
                     Track your call volume and lead generation
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <div className="space-y-4">
                     {callStats.monthlyStats.map((stat, index) => (
                       <div
@@ -901,14 +1112,14 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#0a0a0a]/60 border border-gray-800">
-                <CardHeader>
+              <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
+                <CardHeader className="p-2">
                   <CardTitle>Performance Metrics</CardTitle>
                   <CardDescription className="text-gray-400 font-mono">
                     Key performance indicators
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <div className="space-y-6">
                     <div>
                       <div className="flex justify-between items-center mb-2">
@@ -961,6 +1172,145 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+      {open && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className=" p-8 rounded-xl max-w-md w-full bg-[#0a0a0a]/90 backdrop-blur-lg border border-[#333] ">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF2E9F] to-[#B026FF]">
+                Cancel Subscription
+              </h2>
+              <XMarkIcon
+                onClick={() => setOpen(false)}
+                className="text-gray-400 h-10 w-10 cursor-pointer hover:text-white"
+              />
+            </div>
+            <form onSubmit={handleCancelSubscription} className="space-y-6">
+              <label className="block text-lg font-semibold text-gray-200">
+                Please Provide Reason
+              </label>
+              <textarea
+                name="reason"
+                className="w-full bg-gray-800/50 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-[#B026FF]"
+                placeholder="Cancellation reason"
+                required
+              />
+              <div className="flex justify-center gap-4">
+                <button
+                  type="submit"
+                  onClick={() => setMode("Immediate")}
+                  className="px-6 py-2 bg-gradient-to-r from-[#FF2E9F] to-[#B026FF] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                >
+                  {isSubmitting ? "Cancelling..." : "Immediate"}
+                </button>
+                <button
+                  type="submit"
+                  onClick={() => setMode("End-of-term")}
+                  className="px-6 py-2 bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                >
+                  {isImmediateSubmitting ? "Cancelling..." : "End-of-term"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {step === "phone" && (
+        <AlertDialog defaultOpen>
+          <AlertDialogContent className="bg-[#0a0a0a]/90 backdrop-blur-lg border border-[#333] rounded-xl max-w-md">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-pink-400">
+                Enter Your Phone Number
+              </AlertDialogTitle>
+              <div className="flex justify-between items-center">
+                <h3 className="p-16-semibold text-white text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+                  ENTER YOUR NEW MOBILE NUMBER
+                </h3>
+                <AlertDialogCancel
+                  onClick={() => {
+                    setStep("payment");
+                  }}
+                  className="border-0 p-0 hover:bg-transparent text-gray-400 hover:text-white transition-colors"
+                >
+                  <XMarkIcon className="size-6 cursor-pointer" />
+                </AlertDialogCancel>
+              </div>
+            </AlertDialogHeader>
+            <form
+              onSubmit={handlePhoneSubmit(handlePhoneSubmission)}
+              className="space-y-6 mt-4"
+            >
+              <div className="w-full">
+                <label
+                  htmlFor="MobileNumber"
+                  className="block text-lg font-semibold text-gray-200 mb-2"
+                >
+                  Enter Your New Phone Number
+                </label>
+                <div className="flex items-center justify-start w-full bg-[#1a1a1a]/50 backdrop-blur-sm border border-[#333] rounded-xl overflow-hidden">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="bg-transparent text-white p-3 border-r border-[#333] focus:outline-none focus:ring-2 focus:ring-[#00F0FF]"
+                  >
+                    {countryCodes.map((countryCode, index) => (
+                      <option
+                        key={index}
+                        className="bg-[#1a1a1a] text-gray-300"
+                        value={countryCode.code}
+                      >
+                        {countryCode.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    id="MobileNumber"
+                    type="text"
+                    {...registerPhone("MobileNumber")}
+                    className="w-full bg-transparent py-3 px-4 text-white placeholder:text-gray-500 focus:outline-none"
+                    placeholder="Phone number"
+                  />
+                </div>
+                {phoneErrors.MobileNumber && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {phoneErrors.MobileNumber.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className={`w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-[#00F0FF] to-[#B026FF] hover:from-[#00F0FF]/90 hover:to-[#B026FF]/90 transition-all ${
+                    isOtpSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
+                  disabled={isOtpSubmitting}
+                >
+                  {isOtpSubmitting ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-t-2 border-white border-solid rounded-full animate-spin"></div>
+                      Sending OTP...
+                    </div>
+                  ) : (
+                    "Send OTP"
+                  )}
+                </button>
+              </div>
+            </form>
+
+            <AlertDialogDescription className="p-4 text-center text-sm text-gray-400 border-t border-[#333] pt-4">
+              <span className="text-[#00F0FF]">
+                IT WILL HELP US TO PROVIDE BETTER SERVICES
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+      {step === "otp" && (
+        <OTPVerification
+          phone={phone}
+          onVerified={handleOTPVerified}
+          buyerId={buyer}
+        />
+      )}
+    </>
   );
 }

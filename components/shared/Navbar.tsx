@@ -17,7 +17,7 @@ export function NavBar() {
 
   return (
     <header className="sticky px-5  lg:px-10  top-0 z-50 backdrop-blur-lg bg-black border-b border-[#00F0FF]/20">
-      <div className=" mx-auto px-4 max-w-7xl py-4 flex justify-between gap-1 lg:gap-2 items-center">
+      <div className=" mx-auto md:px-4 max-w-7xl py-4 flex justify-between gap-1 lg:gap-2 items-center">
         {/* Logo */}
         <Link href={"/"} className="flex items-center">
           <div className="relative w-7 h-7 lg:w-10 lg:h-10 mr-1 lg:mr-2">
