@@ -73,7 +73,7 @@ export function NavBar() {
           </SignedOut>
           <SignedIn>
             <Link
-              href={"/dashboard"}
+              href={"/dashboard1"}
               className="hidden md:flex px-2 lg:px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >
               <i className="fas fa-user-astronaut mr-2 self-center"></i>
@@ -128,7 +128,7 @@ export function NavBar() {
           <SignedIn>
             <Button
               onClick={() => {
-                router.push("/dashboard");
+                router.push("/dashboard1");
               }}
               className="flex px-4 py-2  bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-white font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >

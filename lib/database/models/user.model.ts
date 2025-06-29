@@ -1,83 +1,68 @@
-import { Schema, model, models, Document } from "mongoose";
-import type { CreateUserType } from "@/types";
+import { Schema, model, Document } from "mongoose";
 
-interface UserDocument extends Omit<CreateUserType, "_id">, Document {}
+export interface IUser extends Document {
+  clerkId: string;
+  email: string;
+  username: string;
+  phone: string;
+  whatsappNumber: string;
+  createdAt: Date;
+  plan: "starter" | "professional" | "enterprise";
+  isActive: boolean;
+  twilioNumber: string;
+}
 
-const UserSchema = new Schema<UserDocument>(
-  {
-    clerkId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    username: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    twilioNumber: {
-      type: String,
-      unique: true,
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-    aiSettings: {
-      type: {
-        greeting: {
-          type: String,
-          default:
-            "Hello! Our team is currently busy, but I'm here to help. I'm your AI assistant.",
-        },
-        questions: {
-          type: [String],
-          default: [
-            "May I have your name?",
-            "What's your phone number?",
-            "Can you provide your email?",
-            "What's your address?",
-          ],
-        },
-        businessInfo: {
-          type: String,
-          default: "We're a professional service company.",
-        },
-      },
-      required: true,
-      default: {
-        greeting:
-          "Hello! Our team is currently busy, but I'm here to help. I'm your AI assistant.",
-
-        questions: [
-          "May I have your name?",
-          "What's your phone number?",
-          "Can you provide your email?",
-          "What's your address?",
-        ],
-        businessInfo: "We're a professional service company.",
-      },
-    },
-
-    photo: {
-      type: String,
-    },
-    firstName: {
-      type: String,
-    },
-    lastName: {
-      type: String,
-    },
+const UserSchema = new Schema<IUser>({
+  clerkId: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  { timestamps: true } // Adds createdAt and updatedAt fields
-);
+  email: { type: String, required: true, unique: true },
+  username: { type: String },
+  phone: { type: String },
+  whatsappNumber: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  plan: {
+    type: String,
 
-const User = models?.User || model<UserDocument>("User", UserSchema);
+    enum: ["starter", "professional", "enterprise"],
+  },
+  isActive: { type: Boolean, default: false },
+  twilioNumber: {
+    type: String,
+    unique: true,
+  },
+});
 
-export default User;
+export const User = model<IUser>("User", UserSchema);
+
+export interface IUserStats extends Document {
+  userId: string;
+  totalCalls: number;
+  totalLeads: number;
+  monthlyStats: {
+    month: string;
+    year: number;
+    calls: number;
+    leads: number;
+  }[];
+  conversionRate: number;
+}
+
+const UserStatsSchema = new Schema<IUserStats>({
+  userId: { type: String, required: true, ref: "User" },
+  totalCalls: { type: Number, default: 0 },
+  totalLeads: { type: Number, default: 0 },
+  monthlyStats: [
+    {
+      month: String,
+      year: Number,
+      calls: Number,
+      leads: Number,
+    },
+  ],
+  conversionRate: { type: Number, default: 0 },
+});
+
+export const UserStats = model<IUserStats>("UserStats", UserStatsSchema);
