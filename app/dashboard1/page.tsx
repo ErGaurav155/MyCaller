@@ -137,7 +137,7 @@ export default function Dashboard() {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [step, setStep] = useState<"phone" | "otp" | "payment">("payment");
   const [open, setOpen] = useState(false);
-
+  const [takenSub, setTakenSub] = useState(false);
   const [isOtpSubmitting, setIsOtpSubmitting] = useState(false);
   const [phone, setPhone] = useState("");
   const [buyer, setBuyer] = useState("");
@@ -276,107 +276,254 @@ export default function Dashboard() {
     }
   };
   // Mock data - replace with real API calls
+  // useEffect(() => {
+  //   // Simulate loading data
+  //   setLeads([
+  //     {
+  //       id: "1",
+  //       name: "Rahul Sharma",
+  //       phone: "+91 98765 43210",
+  //       email: "rahul@example.com",
+  //       budget: "₹50,000 - ₹1,00,000",
+  //       problem: "Need digital marketing services for restaurant",
+  //       address: "Mumbai, Maharashtra",
+  //       status: "pending",
+  //       createdAt: "2025-01-08T10:30:00Z",
+  //       twilioNumber: "+1 234 567 8901",
+  //     },
+  //     {
+  //       id: "2",
+  //       name: "Priya Patel",
+  //       phone: "+91 87654 32109",
+  //       email: "priya@example.com",
+  //       budget: "₹25,000 - ₹50,000",
+  //       problem: "Website development for small business",
+  //       address: "Ahmedabad, Gujarat",
+  //       status: "resolved",
+  //       createdAt: "2025-01-07T14:15:00Z",
+  //       twilioNumber: "+1 234 567 8901",
+  //     },
+  //     {
+  //       id: "3",
+  //       name: "Amit Kumar",
+  //       phone: "+91 76543 21098",
+  //       email: "amit@example.com",
+  //       budget: "₹1,00,000+",
+  //       problem: "Complete IT infrastructure setup",
+  //       address: "Delhi, India",
+  //       status: "pending",
+  //       createdAt: "2025-01-06T09:45:00Z",
+  //       twilioNumber: "+1 234 567 8901",
+  //     },
+  //   ]);
+
+  //   setCallStats({
+  //     totalCalls: 156,
+  //     monthlyStats: [
+  //       { month: "Dec 2024", calls: 45, leads: 32 },
+  //       { month: "Jan 2025", calls: 67, leads: 43 },
+  //       { month: "Feb 2025", calls: 44, leads: 28 },
+  //     ],
+  //   });
+
+  //   setTwilioNumbers([
+  //     {
+  //       id: "1",
+  //       number: "+1 234 567 8901",
+  //       isActive: true,
+  //       totalCalls: 89,
+  //       totalLeads: 56,
+  //       forwardToNumber: "+91 98765 43210",
+  //     },
+  //   ]);
+
+  //   // Default template
+  //   setSelectedTemplate({
+  //     greeting:
+  //       "Hello! Thank you for calling. I'm an AI assistant and I'd be happy to help you today.",
+  //     questions: [
+  //       {
+  //         id: "1",
+  //         question: "May I please have your name?",
+  //         order: 1,
+  //         required: true,
+  //         type: "text",
+  //       },
+  //       {
+  //         id: "2",
+  //         question: "Could you please provide your email address?",
+  //         order: 2,
+  //         required: true,
+  //         type: "email",
+  //       },
+  //       {
+  //         id: "3",
+  //         question: "What is your budget range for this project?",
+  //         order: 3,
+  //         required: false,
+  //         type: "text",
+  //       },
+  //       {
+  //         id: "4",
+  //         question:
+  //           "Could you please describe the problem or service you need help with?",
+  //         order: 4,
+  //         required: true,
+  //         type: "text",
+  //       },
+  //     ],
+  //     closingMessage:
+  //       "Thank you for your time. I have recorded all your information. Someone from our team will contact you within 24 hours. Have a great day!",
+  //   });
+  // }, []);
   useEffect(() => {
-    // Simulate loading data
-    setLeads([
-      {
-        id: "1",
-        name: "Rahul Sharma",
-        phone: "+91 98765 43210",
-        email: "rahul@example.com",
-        budget: "₹50,000 - ₹1,00,000",
-        problem: "Need digital marketing services for restaurant",
-        address: "Mumbai, Maharashtra",
-        status: "pending",
-        createdAt: "2025-01-08T10:30:00Z",
-        twilioNumber: "+1 234 567 8901",
-      },
-      {
-        id: "2",
-        name: "Priya Patel",
-        phone: "+91 87654 32109",
-        email: "priya@example.com",
-        budget: "₹25,000 - ₹50,000",
-        problem: "Website development for small business",
-        address: "Ahmedabad, Gujarat",
-        status: "resolved",
-        createdAt: "2025-01-07T14:15:00Z",
-        twilioNumber: "+1 234 567 8901",
-      },
-      {
-        id: "3",
-        name: "Amit Kumar",
-        phone: "+91 76543 21098",
-        email: "amit@example.com",
-        budget: "₹1,00,000+",
-        problem: "Complete IT infrastructure setup",
-        address: "Delhi, India",
-        status: "pending",
-        createdAt: "2025-01-06T09:45:00Z",
-        twilioNumber: "+1 234 567 8901",
-      },
-    ]);
-
-    setCallStats({
-      totalCalls: 156,
-      monthlyStats: [
-        { month: "Dec 2024", calls: 45, leads: 32 },
-        { month: "Jan 2025", calls: 67, leads: 43 },
-        { month: "Feb 2025", calls: 44, leads: 28 },
-      ],
-    });
-
-    setTwilioNumbers([
-      {
-        id: "1",
-        number: "+1 234 567 8901",
-        isActive: true,
-        totalCalls: 89,
-        totalLeads: 56,
-        forwardToNumber: "+91 98765 43210",
-      },
-    ]);
-
-    // Default template
-    setSelectedTemplate({
-      greeting:
-        "Hello! Thank you for calling. I'm an AI assistant and I'd be happy to help you today.",
-      questions: [
+    if (!userId) return;
+    const isSubscribed = getSubscriptionInfo(userId);
+    if (!isSubscribed) {
+      setTakenSub(false);
+      setLeads([
         {
           id: "1",
-          question: "May I please have your name?",
-          order: 1,
-          required: true,
-          type: "text",
+          name: "Rahul Sharma",
+          phone: "+91 98765 43210",
+          email: "rahul@example.com",
+          budget: "₹50,000 - ₹1,00,000",
+          problem: "Need digital marketing services for restaurant",
+          address: "Mumbai, Maharashtra",
+          status: "pending",
+          createdAt: "2025-01-08T10:30:00Z",
+          twilioNumber: "+1 234 567 8901",
         },
         {
           id: "2",
-          question: "Could you please provide your email address?",
-          order: 2,
-          required: true,
-          type: "email",
+          name: "Priya Patel",
+          phone: "+91 87654 32109",
+          email: "priya@example.com",
+          budget: "₹25,000 - ₹50,000",
+          problem: "Website development for small business",
+          address: "Ahmedabad, Gujarat",
+          status: "resolved",
+          createdAt: "2025-01-07T14:15:00Z",
+          twilioNumber: "+1 234 567 8901",
         },
         {
           id: "3",
-          question: "What is your budget range for this project?",
-          order: 3,
-          required: false,
-          type: "text",
+          name: "Amit Kumar",
+          phone: "+91 76543 21098",
+          email: "amit@example.com",
+          budget: "₹1,00,000+",
+          problem: "Complete IT infrastructure setup",
+          address: "Delhi, India",
+          status: "pending",
+          createdAt: "2025-01-06T09:45:00Z",
+          twilioNumber: "+1 234 567 8901",
         },
-        {
-          id: "4",
-          question:
-            "Could you please describe the problem or service you need help with?",
-          order: 4,
-          required: true,
-          type: "text",
-        },
-      ],
-      closingMessage:
-        "Thank you for your time. I have recorded all your information. Someone from our team will contact you within 24 hours. Have a great day!",
-    });
-  }, []);
+      ]);
 
+      setCallStats({
+        totalCalls: 156,
+        monthlyStats: [
+          { month: "Dec 2024", calls: 45, leads: 32 },
+          { month: "Jan 2025", calls: 67, leads: 43 },
+          { month: "Feb 2025", calls: 44, leads: 28 },
+        ],
+      });
+
+      setTwilioNumbers([
+        {
+          id: "1",
+          number: "+1 234 567 8901",
+          isActive: true,
+          totalCalls: 89,
+          totalLeads: 56,
+          forwardToNumber: "+91 98765 43210",
+        },
+      ]);
+
+      // Default template
+      setSelectedTemplate({
+        greeting:
+          "Hello! Thank you for calling. I'm an AI assistant and I'd be happy to help you today.",
+        questions: [
+          {
+            id: "1",
+            question: "May I please have your name?",
+            order: 1,
+            required: true,
+            type: "text",
+          },
+          {
+            id: "2",
+            question: "Could you please provide your email address?",
+            order: 2,
+            required: true,
+            type: "email",
+          },
+          {
+            id: "3",
+            question: "What is your budget range for this project?",
+            order: 3,
+            required: false,
+            type: "text",
+          },
+          {
+            id: "4",
+            question:
+              "Could you please describe the problem or service you need help with?",
+            order: 4,
+            required: true,
+            type: "text",
+          },
+        ],
+        closingMessage:
+          "Thank you for your time. I have recorded all your information. Someone from our team will contact you within 24 hours. Have a great day!",
+      });
+    } else {
+      const fetchData = async () => {
+        try {
+          // Fetch leads
+          const leadsRes = await fetch(`/api/leads?userId=${userId}`);
+          const leadsData = await leadsRes.json();
+          setLeads(
+            leadsData.leads.map((lead: any) => ({
+              ...lead,
+              phone: lead.callerNumber,
+              budget: lead.budget || "Not specified",
+              address: lead.address || "Not specified",
+            }))
+          );
+
+          // Fetch call stats
+          const statsRes = await fetch(`/api/stats?userId=${userId}`);
+          const statsData = await statsRes.json();
+          setCallStats(statsData.stats);
+
+          // Fetch Twilio numbers
+          const twilioRes = await fetch(`/api/twilio?userId=${userId}`);
+          const twilioData = await twilioRes.json();
+          setTwilioNumbers(
+            twilioData.twilioNumbers.map((num: any) => ({
+              ...num,
+              number: num.phoneNumber,
+            }))
+          );
+
+          // Fetch template
+          if (twilioData.twilioNumbers.length > 0) {
+            const templateRes = await fetch(
+              `/api/template?userId=${userId}&twilioNumber=${twilioData.twilioNumbers[0].phoneNumber}`
+            );
+            const templateData = await templateRes.json();
+            setSelectedTemplate(templateData.template);
+          }
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        }
+      };
+      setTakenSub(true);
+      fetchData();
+    }
+  }, [userId, takenSub]);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-IN", {
       day: "numeric",
@@ -503,6 +650,13 @@ export default function Dashboard() {
       </div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
+        {!takenSub && (
+          <div>
+            <h1 className="text-xl font-semibold text-white">
+              Demo Data For Unsubscribed Users
+            </h1>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 ">
           <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
             <CardContent className="p-6">
@@ -559,7 +713,7 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="leads" className="space-y-6 ">
-          <div className="flex flex-col md:flex-row items-center justify-between ">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between ">
             <TabsList className="bg-[#0a0a0a]/60 border min-h-max flex flex-wrap max-w-max md:gap-3 text-white border-gray-800">
               <TabsTrigger
                 value="leads"
