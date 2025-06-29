@@ -56,40 +56,24 @@ export async function POST(req: Request) {
 
   // CREATE
   if (eventType === "user.created") {
-    const {
-      id,
-      email_addresses,
-      image_url,
-      first_name,
-      last_name,
-      username,
-      public_metadata,
-    } = evt.data;
+    const { id, email_addresses, username, public_metadata } = evt.data;
 
     const phone = (public_metadata?.phone as string) || "";
     const twilioNumber = (public_metadata?.twilioNumber as string) || "";
     const isActive = (public_metadata?.isActive as boolean) || false;
-    const aiSettings = (public_metadata?.aiSettings as {
-      greeting: string;
-      questions: string[];
-      businessInfo: string;
-    }) || {
-      greeting: "",
-      questions: [],
-      businessInfo: "",
-    };
+    const whatsappNumber = (public_metadata?.whatsappNumber as string) || " ";
+    const plan = (public_metadata?.plan as string) || " ";
 
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
       username: username || "",
-      firstName: first_name || "",
-      lastName: last_name || "",
+
       phone,
+      whatsappNumber,
       twilioNumber,
       isActive,
-      aiSettings,
-      photo: image_url,
+      plan,
     };
 
     try {
@@ -116,32 +100,22 @@ export async function POST(req: Request) {
 
   // UPDATE
   if (eventType === "user.updated") {
-    const { id, image_url, first_name, last_name, username, public_metadata } =
-      evt.data;
+    const { id, username, public_metadata } = evt.data;
 
     const phone = (public_metadata?.phone as string) || "";
     const twilioNumber = (public_metadata?.twilioNumber as string) || "";
     const isActive = (public_metadata?.isActive as boolean) || false;
-    const aiSettings = (public_metadata?.aiSettings as {
-      greeting: string;
-      questions: string[];
-      businessInfo: string;
-    }) || {
-      greeting: "",
-      questions: [],
-      businessInfo: "",
-    };
+    const whatsappNumber = (public_metadata?.whatsappNumber as string) || " ";
+    const plan = (public_metadata?.plan as string) || " ";
 
     try {
       const updatedUser = await updateUser(id, {
         username: username || "",
-        firstName: first_name || "",
-        lastName: last_name || "",
+        whatsappNumber,
         phone,
         twilioNumber,
         isActive,
-        aiSettings,
-        photo: image_url,
+        plan,
       });
 
       return NextResponse.json({ message: "OK", user: updatedUser });

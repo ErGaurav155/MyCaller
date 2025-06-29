@@ -20,15 +20,8 @@ export interface CreateUserType {
   phone?: string;
   twilioNumber?: string;
   isActive: boolean;
-
-  aiSettings: {
-    greeting: string;
-    questions: string[];
-    businessInfo: string;
-  };
-  firstName: string;
-  lastName: string;
-  photo: string;
+  whatsappNumber: string;
+  plan: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -37,15 +30,8 @@ export interface UpdateUserType {
   phone?: string;
   twilioNumber?: string;
   isActive: boolean;
-
-  aiSettings: {
-    greeting: string;
-    questions: string[];
-    businessInfo: string;
-  };
-  firstName: string;
-  lastName: string;
-  photo: string;
+  plan: string;
+  whatsappNumber: string;
 }
 
 export interface CallSession {

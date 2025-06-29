@@ -7,7 +7,7 @@ export interface IUser extends Document {
   phone: string;
   whatsappNumber: string;
   createdAt: Date;
-  plan: "starter" | "professional" | "enterprise";
+  plan: "free" | "starter" | "professional" | "enterprise";
   isActive: boolean;
   twilioNumber: string;
 }
@@ -25,8 +25,8 @@ const UserSchema = new Schema<IUser>({
   createdAt: { type: Date, default: Date.now },
   plan: {
     type: String,
-
-    enum: ["starter", "professional", "enterprise"],
+    default: "free",
+    enum: ["free", "starter", "professional", "enterprise"],
   },
   isActive: { type: Boolean, default: false },
   twilioNumber: {
