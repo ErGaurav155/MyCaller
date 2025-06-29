@@ -62,13 +62,12 @@ export async function POST(req: Request) {
     const twilioNumber = (public_metadata?.twilioNumber as string) || "";
     const isActive = (public_metadata?.isActive as boolean) || false;
     const whatsappNumber = (public_metadata?.whatsappNumber as string) || " ";
-    const plan = (public_metadata?.plan as string) || " ";
+    const plan = (public_metadata?.plan as string) || "free";
 
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
       username: username || "",
-
       phone,
       whatsappNumber,
       twilioNumber,

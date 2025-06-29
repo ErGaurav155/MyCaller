@@ -20,7 +20,7 @@ export interface CreateUserType {
   phone?: string;
   twilioNumber?: string;
   isActive: boolean;
-  whatsappNumber: string;
+  whatsappNumber?: string;
   plan: string;
   createdAt?: Date;
   updatedAt?: Date;
