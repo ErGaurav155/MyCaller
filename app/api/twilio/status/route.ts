@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import User from "@/lib/database/models/user.model";
+import { User } from "@/lib/database/models/user.model";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
       if (user) {
         // Redirect to AI assistant
-        response.say(user.aiSettings.greeting);
+        response.say("Bye,Have A nice Day");
         response.redirect(
           `/api/twilio/ai-assistant?userId=${userId}&callSid=${callSid}&callerNumber=${callerNumber}&step=0`
         );

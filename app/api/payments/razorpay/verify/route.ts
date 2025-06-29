@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { connectToDatabase } from "@/lib/database/mongoose";
-import User from "@/lib/database/models/user.model";
 
 export async function POST(req: NextRequest) {
   try {

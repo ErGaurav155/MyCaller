@@ -1,7 +1,6 @@
 "use server";
 
 import OpenAI from "openai";
-import { connectToDatabase } from "../database/mongoose";
 import { File } from "../file";
 
 const openai = setupOpenAI();
