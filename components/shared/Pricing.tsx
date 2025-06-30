@@ -34,7 +34,7 @@ export const Pricing = () => {
       setIsSubscribed(false);
     } else {
       const isSubscribed = await getSubscriptionInfo(buyerId);
-      if (!isSubscribed) {
+      if (isSubscribed === 0) {
         setIsSubscribed(false);
       } else {
         setIsSubscribed(true);
