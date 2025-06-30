@@ -31,7 +31,6 @@ const UserSchema = new Schema<IUser>({
   isActive: { type: Boolean, default: false },
   twilioNumber: {
     type: String,
-    unique: true,
   },
 });
 
