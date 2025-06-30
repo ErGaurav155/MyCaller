@@ -386,7 +386,7 @@ export default function Dashboard() {
       try {
         const user = await getUserById(userId);
         setBuyer(user._id);
-        const response = await getSubscriptionInfo(userId);
+        const response = await getSubscriptionInfo(user._id);
         console.log(!response);
         if (!response) {
           setCallerSubscription(false);

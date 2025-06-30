@@ -33,7 +33,7 @@ export const Pricing = () => {
     if (!userId) {
       setIsSubscribed(false);
     } else {
-      const isSubscribed = getSubscriptionInfo(userId);
+      const isSubscribed = await getSubscriptionInfo(buyerId);
       if (!isSubscribed) {
         setIsSubscribed(false);
       } else {

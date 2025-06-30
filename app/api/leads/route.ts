@@ -75,6 +75,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/database/mongoose";
 import { User } from "@/lib/database/models/user.model";
 import { Lead } from "@/lib/database/models/lead.model";
+import { getUserById } from "@/lib/action/user.actions";
 
 export async function GET(request: NextRequest) {
   try {
@@ -94,7 +95,7 @@ export async function GET(request: NextRequest) {
     await connectToDatabase();
 
     // Validate user exists
-    const user = await User.findById(userId);
+    const user = await getUserById(userId);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
