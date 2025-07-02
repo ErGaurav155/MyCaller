@@ -90,11 +90,13 @@ export function LeadPage({
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      if (newPage >= 1 && newPage <= pagination.totalPages) {
-        fetchLeads(newPage);
+      if (response) {
+        if (newPage >= 1 && newPage <= pagination.totalPages) {
+          fetchLeads(newPage);
+        }
       }
     },
-    [fetchLeads, pagination.totalPages]
+    [fetchLeads, pagination.totalPages, response]
   );
 
   const formatDate = (dateString: string) => {

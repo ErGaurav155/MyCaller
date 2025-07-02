@@ -20,7 +20,7 @@ export interface ILead extends Document {
 
 const LeadSchema = new Schema<ILead>({
   userId: { type: String, required: true, ref: "User" },
-  twilioNumber: { type: String, required: true, ref: "TwilioNumber" },
+  twilioNumber: { type: String, required: true },
   callerNumber: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
