@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 export interface ILead extends Document {
   userId: string;
@@ -45,9 +45,6 @@ const LeadSchema = new Schema<ILead>({
   recordingUrl: { type: String },
 });
 
-LeadSchema.index({ userId: 1 });
-LeadSchema.index({ twilioNumber: 1 });
-LeadSchema.index({ status: 1 });
-LeadSchema.index({ createdAt: -1 });
+const Lead = models?.Lead || model<ILead>("Lead", LeadSchema);
 
-export const Lead = model<ILead>("Lead", LeadSchema);
+export default Lead;

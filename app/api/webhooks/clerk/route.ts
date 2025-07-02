@@ -59,20 +59,28 @@ export async function POST(req: Request) {
     const { id, email_addresses, username, public_metadata } = evt.data;
 
     const phone = (public_metadata?.phone as string) || "";
-    const twilioNumber = (public_metadata?.twilioNumber as string) || "";
+    const twilioNumber = (public_metadata?.twilioNumber as string) || " ";
     const isActive = (public_metadata?.isActive as boolean) || false;
-    const whatsappNumber = (public_metadata?.whatsappNumber as string) || " ";
-    const plan = (public_metadata?.plan as string) || "free";
+    const plan =
+      (public_metadata?.plan as
+        | "free"
+        | "starter"
+        | "professional"
+        | "enterprise") || "free";
+    const monthlyQuota = (public_metadata?.monthlyQuota as number) || 0;
+    const currentMonthUsage =
+      (public_metadata?.currentMonthUsage as number) || 0;
 
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
       username: username || "",
       phone,
-      whatsappNumber,
       twilioNumber,
       isActive,
       plan,
+      monthlyQuota,
+      currentMonthUsage,
     };
 
     try {
@@ -102,19 +110,26 @@ export async function POST(req: Request) {
     const { id, username, public_metadata } = evt.data;
 
     const phone = (public_metadata?.phone as string) || "";
-    const twilioNumber = (public_metadata?.twilioNumber as string) || "";
+    const twilioNumber = (public_metadata?.twilioNumber as string) || " ";
     const isActive = (public_metadata?.isActive as boolean) || false;
-    const whatsappNumber = (public_metadata?.whatsappNumber as string) || " ";
-    const plan = (public_metadata?.plan as string) || " ";
-
+    const plan =
+      (public_metadata?.plan as
+        | "free"
+        | "starter"
+        | "professional"
+        | "enterprise") || "free";
+    const monthlyQuota = (public_metadata?.monthlyQuota as number) || 0;
+    const currentMonthUsage =
+      (public_metadata?.currentMonthUsage as number) || 0;
     try {
       const updatedUser = await updateUser(id, {
         username: username || "",
-        whatsappNumber,
         phone,
         twilioNumber,
         isActive,
         plan,
+        monthlyQuota,
+        currentMonthUsage,
       });
 
       return NextResponse.json({ message: "OK", user: updatedUser });

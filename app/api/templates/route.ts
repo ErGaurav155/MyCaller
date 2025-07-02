@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import {
-  QuestionTemplate,
-  IQuestionTemplate,
+import QuestionTemplate, {
   defaultQuestions,
 } from "@/lib/database/models/questionTemp.model";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
-    const twilioNumber = searchParams.get("twilioNumber");
+    const userId = searchParams.get("userId")?.trim();
 
-    if (!userId || !twilioNumber) {
+    if (!userId) {
       return NextResponse.json(
         { error: "User ID and Twilio number are required" },
         { status: 400 }
@@ -22,15 +19,17 @@ export async function GET(request: NextRequest) {
     await connectToDatabase();
 
     let template = await QuestionTemplate.findOne({
-      userId,
-      twilioNumber,
+      userId: userId,
     }).lean();
 
+    console.log("userId:", userId);
+
+    console.log("template:", template);
     // If no template exists, create a default one
     if (!template) {
       const defaultTemplate = {
+        _id: Math.random,
         userId,
-        twilioNumber,
         greeting:
           "Hello! Thank you for calling. I'm an AI assistant and I'd be happy to help you today.",
         questions: defaultQuestions,
@@ -39,11 +38,10 @@ export async function GET(request: NextRequest) {
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
+        __v: 0,
       };
 
-      const newTemplate = new QuestionTemplate(defaultTemplate);
-      await newTemplate.save();
-      template = newTemplate.toObject() as any;
+      template = defaultTemplate;
     }
 
     return NextResponse.json({ template });

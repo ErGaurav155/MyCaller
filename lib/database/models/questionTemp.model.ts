@@ -1,8 +1,8 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 // Separate interface for the question structure (without Document)
 export interface Question {
-  index: string;
+  _id: string;
   question: string;
   order: number;
   required: boolean;
@@ -10,7 +10,6 @@ export interface Question {
 }
 
 // Interface for the document that includes Mongoose properties
-export interface IQuestion extends Question, Document {}
 
 export interface IQuestionTemplate extends Document {
   userId: string;
@@ -24,7 +23,7 @@ export interface IQuestionTemplate extends Document {
 }
 
 const QuestionSchema = new Schema<Question>({
-  index: { type: String, required: true },
+  _id: { type: String, required: true },
   question: { type: String, required: true },
   order: { type: Number, required: true },
   required: { type: Boolean, required: true },
@@ -36,8 +35,8 @@ const QuestionSchema = new Schema<Question>({
 });
 
 const QuestionTemplateSchema = new Schema<IQuestionTemplate>({
-  userId: { type: String, required: true, ref: "User" },
-  twilioNumber: { type: String, required: true, ref: "TwilioNumber" },
+  userId: { type: String, required: true },
+  twilioNumber: { type: String, required: true },
   greeting: { type: String, required: true },
   questions: [QuestionSchema],
   closingMessage: { type: String, required: true },
@@ -51,35 +50,36 @@ QuestionTemplateSchema.pre("save", function (next) {
   next();
 });
 
-export const QuestionTemplate = model<IQuestionTemplate>(
-  "QuestionTemplate",
-  QuestionTemplateSchema
-);
+const QuestionTemplate =
+  models?.QuestionTemplate ||
+  model<IQuestionTemplate>("QuestionTemplate", QuestionTemplateSchema);
+
+export default QuestionTemplate;
 
 export const defaultQuestions: Question[] = [
   {
-    index: "1",
+    _id: "1",
     question: "May I please have your name?",
     order: 1,
     required: true,
     type: "text",
   },
   {
-    index: "2",
+    _id: "2",
     question: "Could you please provide your email address?",
     order: 2,
     required: true,
     type: "email",
   },
   {
-    index: "3",
+    _id: "3",
     question: "What is your budget range for this project?",
     order: 3,
     required: false,
     type: "text",
   },
   {
-    index: "4",
+    _id: "4",
     question:
       "Could you please describe the problem or service you need help with?",
     order: 4,

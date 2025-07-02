@@ -1,9 +1,7 @@
 import { NextRequest } from "next/server";
-import twilio from "twilio";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import { TwilioNumber } from "@/lib/database/models/twilioNumber.model";
-import { Lead } from "@/lib/database/models/lead.model";
-import { CallLog } from "@/lib/database/models/callLogs.model";
+import Lead from "@/lib/database/models/lead.model";
+import User from "@/lib/database/models/user.model";
 
 export async function POST(request: NextRequest) {
   try {
@@ -107,15 +105,15 @@ export async function POST(request: NextRequest) {
           await connectToDatabase();
 
           // Find the Twilio number document
-          const twilioNumber = await TwilioNumber.findOne({ phoneNumber: to });
+          const user = await User.findOne({ twilioNumber: to });
 
-          if (!twilioNumber) {
+          if (!user) {
             throw new Error(`Twilio number ${to} not found`);
           }
 
           // Create new lead
           const newLead = new Lead({
-            userId: twilioNumber.userId,
+            userId: user.userId,
             twilioNumber: to,
             callerNumber: from,
             name: finalName || "Unknown",
@@ -129,18 +127,6 @@ export async function POST(request: NextRequest) {
           });
 
           const savedLead = await newLead.save();
-
-          // Update call log
-          await CallLog.updateOne(
-            { callSid },
-            {
-              leadGenerated: true,
-              handledBy: "ai",
-              leadId: savedLead._id,
-            }
-          );
-
-          console.log("Lead saved successfully:", savedLead);
         } catch (error) {
           console.error("Error saving lead:", error);
         }

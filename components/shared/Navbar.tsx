@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { Headset } from "lucide-react";
 
 export function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +24,8 @@ export function NavBar() {
           <div className="relative w-7 h-7 lg:w-10 lg:h-10 mr-1 lg:mr-2">
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-pulse"></div>
             <div className="absolute inset-1 rounded-full bg-[#0A0A0A] flex items-center justify-center">
-              <i className="fas fa-satellite text-[#00F0FF] h-4 w-4"></i>
+              {/* <i className="fas fa-satellite text-[#00F0FF] h-4 w-4"></i> */}
+              <Headset className="h-4 md:h-5 md:w-5 w-4 text-[#00F0FF]" />
             </div>
           </div>
           <h1 className="text-base lg:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
@@ -73,7 +75,7 @@ export function NavBar() {
           </SignedOut>
           <SignedIn>
             <Link
-              href={"/dashboard1"}
+              href={"/dashboard"}
               className="hidden md:flex px-2 lg:px-4 py-2 !rounded-button bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-black font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >
               <i className="fas fa-user-astronaut mr-2 self-center"></i>
@@ -128,7 +130,7 @@ export function NavBar() {
           <SignedIn>
             <Button
               onClick={() => {
-                router.push("/dashboard1");
+                router.push("/dashboard");
               }}
               className="flex px-4 py-2  bg-gradient-to-r from-[#00F0FF] to-[#B026FF] text-white font-medium hover:opacity-90 transition-opacity whitespace-nowrap cursor-pointer"
             >

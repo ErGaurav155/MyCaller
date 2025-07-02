@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Switch } from "@/components/ui/switch";
 import { Check, Zap } from "lucide-react";

@@ -1,5 +1,4 @@
-import { CallLog } from "@/lib/database/models/callLogs.model";
-import { TwilioNumber } from "@/lib/database/models/twilioNumber.model";
+import User from "@/lib/database/models/user.model";
 import { connectToDatabase } from "@/lib/database/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,50 +24,15 @@ export async function POST(request: NextRequest) {
     await connectToDatabase();
 
     // Find the Twilio number configuration
-    const twilioNumber = await TwilioNumber.findOne({ phoneNumber: to });
+    const user = await User.findOne({ twilioNumber: to });
 
-    if (!twilioNumber) {
+    if (!user) {
       console.error("Twilio number not found:", to);
       return NextResponse.json(
         { error: "Number not configured" },
         { status: 404 }
       );
     }
-
-    // Map Twilio status to our CallLog status
-    const statusMap: Record<
-      string,
-      "completed" | "busy" | "no-answer" | "failed" | "canceled"
-    > = {
-      completed: "completed",
-      busy: "busy",
-      "no-answer": "no-answer",
-      failed: "failed",
-      canceled: "canceled",
-      // Map initial statuses to 'completed' as placeholder
-      queued: "completed",
-      ringing: "completed",
-      "in-progress": "completed",
-    };
-
-    const mappedStatus = statusMap[callStatus.toLowerCase()] || "completed";
-
-    // Create new call log
-    const callLog = new CallLog({
-      userId: twilioNumber.userId,
-      twilioNumber: to,
-      callerNumber: from,
-      callSid,
-      direction: direction.toLowerCase() as "inbound" | "outbound",
-      status: mappedStatus,
-      duration: 0,
-      startTime: new Date(),
-      handledBy: "user", // Default, will be updated if AI handles
-      leadGenerated: false,
-      cost: 0,
-    });
-
-    await callLog.save();
 
     // Generate TwiML response
     let twimlResponse = "";
@@ -79,7 +43,7 @@ export async function POST(request: NextRequest) {
         <?xml version="1.0" encoding="UTF-8"?>
         <Response>
           <Dial timeout="20" record="record-from-answer">
-            <Number>${twilioNumber.forwardToNumber}</Number>
+            <Number>${user.phone}</Number>
           </Dial>
           <Redirect>${process.env.NEXT_PUBLIC_APP_URL}/api/twilio/ai-handler?callSid=${callSid}</Redirect>
         </Response>

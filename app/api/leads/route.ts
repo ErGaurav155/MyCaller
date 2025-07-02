@@ -1,89 +1,15 @@
-// import { NextRequest, NextResponse } from "next/server";
-// import { connectToDatabase } from "@/lib/database/mongoose";
-// import Lead from "@/lib/database/models/lead.model";
-// import User from "@/lib/database/models/user.model";
-
-// const DEMO_USER_ID = "684eb625b30670b468652a10";
-
-// export async function GET() {
-//   try {
-//     await connectToDatabase();
-
-//     const user = await User.findOne({ _id: DEMO_USER_ID });
-//     if (!user) {
-//       return NextResponse.json({ error: "User not found" }, { status: 404 });
-//     }
-
-//     const leads = await Lead.find({ businessOwner: DEMO_USER_ID })
-//       .sort({ createdAt: -1 })
-//       .lean();
-
-//     return NextResponse.json({
-//       leads: leads.map((lead) => ({
-//         ...lead,
-//         _id: lead._id as string,
-//         businessOwner: lead.businessOwner.toString(),
-//         createdAt: lead.createdAt.toISOString(),
-//         updatedAt: lead.updatedAt.toISOString(),
-//       })),
-//       user: {
-//         ...user.toObject(),
-//         _id: user._id.toString(),
-//         createdAt: user.createdAt.toISOString(),
-//       },
-//     });
-//   } catch (error) {
-//     return NextResponse.json(
-//       { error: "Failed to fetch leads" },
-//       { status: 500 }
-//     );
-//   }
-// }
-// export async function PUT(req: NextRequest) {
-//   try {
-//     const { leadId, status } = await req.json();
-
-//     if (!leadId || !status) {
-//       return NextResponse.json(
-//         { error: "Lead ID and status required" },
-//         { status: 400 }
-//       );
-//     }
-
-//     await connectToDatabase();
-
-//     const updatedLead = await Lead.findByIdAndUpdate(
-//       leadId,
-//       { status },
-//       { new: true }
-//     );
-
-//     if (!updatedLead) {
-//       return NextResponse.json({ error: "Lead not found" }, { status: 404 });
-//     }
-
-//     return NextResponse.json({ lead: updatedLead });
-//   } catch (error) {
-//     console.error("Update lead error:", error);
-//     return NextResponse.json(
-//       { error: "Failed to update lead" },
-//       { status: 500 }
-//     );
-//   }
-// }
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/database/mongoose";
-import { User } from "@/lib/database/models/user.model";
-import { Lead } from "@/lib/database/models/lead.model";
-import { getUserById } from "@/lib/action/user.actions";
+import Lead from "@/lib/database/models/lead.model";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
     const status = searchParams.get("status");
-    const limit = parseInt(searchParams.get("limit") || "50");
-    const skip = parseInt(searchParams.get("skip") || "0");
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "2");
+    const skip = (page - 1) * limit;
 
     if (!userId) {
       return NextResponse.json(
@@ -94,32 +20,32 @@ export async function GET(request: NextRequest) {
 
     await connectToDatabase();
 
-    // Validate user exists
-    const user = await getUserById(userId);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    // Build filter
-    const filter: any = { userId };
-    if (status) {
-      filter.status = status;
-    }
-
-    // Fetch leads using Mongoose model
-    const leads = await Lead.find(filter)
+    const leads = await Lead.find({ userId: userId })
       .sort({ createdAt: -1 })
-      .limit(limit)
       .skip(skip)
+      .limit(limit)
       .lean();
+    console.log("leads", leads);
+
+    if (!leads) {
+      return NextResponse.json({ error: "Lead not found" }, { status: 404 });
+    }
+    const total = await Lead.countDocuments({ userId: userId });
+    const totalPages = Math.ceil(total / limit);
 
     return NextResponse.json({
       leads: leads.map((lead) => ({
         ...lead,
-        _id: lead._id.toString(),
+        _id: lead._id as string,
         createdAt: lead.createdAt.toISOString(),
         resolvedAt: lead.resolvedAt?.toISOString(),
       })),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+      },
     });
   } catch (error) {
     console.error("Error fetching leads:", error);
@@ -182,7 +108,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { leadId, status, notes } = await request.json();
+    const { leadId, status } = await request.json();
 
     if (!leadId || !status) {
       return NextResponse.json(
@@ -195,7 +121,6 @@ export async function PUT(request: NextRequest) {
 
     const updateData: any = {
       status,
-      ...(notes && { notes }),
     };
 
     if (status === "resolved") {

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { model, models } from "mongoose";
 
 const SubscriptionSchema = new mongoose.Schema(
   {
@@ -45,8 +45,8 @@ const SubscriptionSchema = new mongoose.Schema(
 );
 
 // Ensure the model is only created once in development
+
 const Subscription =
-  mongoose.models.Subscription ||
-  mongoose.model("Subscription", SubscriptionSchema);
+  models?.Subscription || model("Subscription", SubscriptionSchema);
 
 export default Subscription;

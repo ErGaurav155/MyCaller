@@ -1,6 +1,5 @@
-import { CallLog } from "@/lib/database/models/callLogs.model";
-import { Lead } from "@/lib/database/models/lead.model";
-import { User } from "@/lib/database/models/user.model";
+// app/api/dashboard/monthly-stats/route.ts
+import Lead from "@/lib/database/models/lead.model";
 import { connectToDatabase } from "@/lib/database/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,84 +16,80 @@ export async function GET(request: NextRequest) {
     }
 
     await connectToDatabase();
+    // Calculate date ranges
+    const now = new Date();
+    const last30Days = new Date(now.setDate(now.getDate() - 30));
+    const last60Days = new Date(now.setDate(now.getDate() - 60));
+    const last90Days = new Date(now.setDate(now.getDate() - 90));
 
-    // Validate user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    // Total calls
-    const totalCalls = await CallLog.countDocuments({ userId });
-
-    // Total leads
-    const totalLeads = await Lead.countDocuments({ userId });
-
-    // Monthly stats for the last 6 months
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    const monthlyStats = await CallLog.aggregate([
-      {
-        $match: {
-          userId: userId,
-          startTime: { $gte: sixMonthsAgo },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$startTime" },
-            month: { $month: "$startTime" },
-          },
-          calls: { $sum: 1 },
-          leads: { $sum: { $cond: [{ $eq: ["$leadGenerated", true] }, 1, 0] } },
-        },
-      },
-      {
-        $sort: { "_id.year": 1, "_id.month": 1 },
-      },
+    // Get leads for each time period
+    const [leads30, leads60, leads90] = await Promise.all([
+      Lead.find({
+        userId,
+        createdAt: { $gte: last30Days },
+      }),
+      Lead.find({
+        userId,
+        createdAt: { $gte: last60Days, $lt: last30Days },
+      }),
+      Lead.find({
+        userId,
+        createdAt: { $gte: last90Days, $lt: last60Days },
+      }),
     ]);
 
-    // Convert to more readable format
-    const formattedMonthlyStats = monthlyStats.map((stat) => ({
-      month: new Date(stat._id.year, stat._id.month - 1).toLocaleString(
-        "default",
-        { month: "short", year: "numeric" }
-      ),
-      calls: stat.calls,
-      leads: stat.leads,
-    }));
+    // Get calls for each time period (assuming calls are tracked in Lead model)
+    const calls30 = await Lead.countDocuments({
+      userId,
+      createdAt: { $gte: last30Days },
+    });
+    const calls60 = await Lead.countDocuments({
+      userId,
+      createdAt: { $gte: last60Days, $lt: last30Days },
+    });
+    const calls90 = await Lead.countDocuments({
+      userId,
+      createdAt: { $gte: last90Days, $lt: last60Days },
+    });
 
-    // Lead status distribution
-    const leadsByStatus = await Lead.aggregate([
-      { $match: { userId: userId } },
-      { $group: { _id: "$status", count: { $sum: 1 } } },
-    ]);
+    // Calculate resolved/pending and conversion rates
+    const calculateStats = (leads: any[], calls: number) => {
+      const resolved = leads.filter((l) => l.status === "resolved").length;
+      const pending = leads.filter((l) => l.status === "pending").length;
+      const conversionRate =
+        calls > 0 ? Math.round((leads.length / calls) * 100) : 0;
 
-    const pendingLeads =
-      leadsByStatus.find((item) => item._id === "pending")?.count || 0;
-    const resolvedLeads =
-      leadsByStatus.find((item) => item._id === "resolved")?.count || 0;
-
-    // Conversion rate
-    const conversionRate =
-      totalCalls > 0 ? Math.round((totalLeads / totalCalls) * 100) : 0;
-
-    const stats = {
-      totalCalls,
-      totalLeads,
-      pendingLeads,
-      resolvedLeads,
-      conversionRate,
-      monthlyStats: formattedMonthlyStats,
+      return {
+        calls,
+        leads: leads.length,
+        resolved,
+        pending,
+        conversionRate,
+      };
     };
 
-    return NextResponse.json({ stats });
+    const stats30 = calculateStats(leads30, calls30);
+    const stats60 = calculateStats(leads60, calls60);
+    const stats90 = calculateStats(leads90, calls90);
+
+    return NextResponse.json([
+      {
+        period: "Last 30 Days",
+        ...stats30,
+      },
+      {
+        period: "Last 60 Days",
+        ...stats60,
+      },
+      {
+        period: "Last 90 Days",
+        ...stats90,
+      },
+    ]);
   } catch (error) {
-    console.error("Error fetching stats:", error);
+    console.error("Error in monthly-stats:", error);
     return NextResponse.json(
-      { error: "Failed to fetch statistics" },
+      { error: "Failed to fetch monthly stats" },
       { status: 500 }
     );
   }

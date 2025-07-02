@@ -20,8 +20,9 @@ export interface CreateUserType {
   phone?: string;
   twilioNumber?: string;
   isActive: boolean;
-  whatsappNumber?: string;
-  plan: string;
+  plan: "free" | "starter" | "professional" | "enterprise";
+  monthlyQuota: number;
+  currentMonthUsage: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -31,7 +32,8 @@ export interface UpdateUserType {
   twilioNumber?: string;
   isActive: boolean;
   plan: string;
-  whatsappNumber: string;
+  monthlyQuota: number;
+  currentMonthUsage: number;
 }
 
 export interface CallSession {
