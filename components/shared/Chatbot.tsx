@@ -96,7 +96,7 @@ export function Chatbot() {
     <div className="h-auto w-auto flex flex-col">
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-80 md:w-96 h-96 md:h-[28rem] rounded-lg overflow-hidden backdrop-blur-lg bg-[#0A0A0A]/80 border border-[#00F0FF]/30 shadow-lg shadow-[#00F0FF]/20">
+        <div className="fixed bottom-6 right-1 md:right-6 z-50 w-[19rem] sm:w-80 md:w-96 min-h-max h-96 md:h-[28rem] rounded-lg overflow-hidden backdrop-blur-lg bg-[#0A0A0A]/80 border border-[#00F0FF]/30 shadow-lg shadow-[#00F0FF]/20">
           {/* Header */}
           <div className="h-12 bg-gradient-to-r from-[#00F0FF] to-[#B026FF] flex items-center justify-between px-4">
             <div className="flex items-center">
@@ -213,12 +213,12 @@ export function Chatbot() {
 
       {/* Toggle button */}
       <button
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] flex items-center justify-center shadow-lg shadow-[#00F0FF]/20"
+        className="fixed bottom-6 right-6 z-50 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] flex items-center justify-center shadow-lg shadow-[#00F0FF]/20"
         onClick={toggleOpen}
         style={{ display: open ? "none" : "flex" }}
       >
         <div className="absolute w-full h-full rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-ping opacity-50"></div>
-        <ChatBubbleLeftIcon className="text-white h-8 w-8" />
+        <ChatBubbleLeftIcon className="text-white h-6 md:h-8 w-6 md:w-8" />
       </button>
     </div>
   );

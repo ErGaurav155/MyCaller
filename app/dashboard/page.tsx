@@ -367,7 +367,6 @@ export default function Dashboard() {
 
               const analyticsData = await analyticsRes.json();
               setMonthlyStats(analyticsData);
-              console.log("analyticsData:", analyticsData);
               // // Fetch Twilio numbers
               const twilioRes = await fetch(
                 `/api/twilio-number?userId=${buyer}`
@@ -383,9 +382,7 @@ export default function Dashboard() {
               const templateRes = await fetch(`/api/templates?userId=${buyer}`);
 
               const templateData = await templateRes.json();
-              console.log("templateData:", templateData);
               setSelectedTemplate(templateData.template);
-              console.log("setSelectedTemplate:", setSelectedTemplate);
             } catch (error) {
               console.error("Failed to fetch data:", error);
             }
@@ -490,7 +487,6 @@ export default function Dashboard() {
       }
 
       const result = await response.json();
-      console.log("Template saved:", result);
       setIsTemplateDialogOpen(false);
     } catch (error) {
       console.error("Error saving template:", error);
@@ -501,13 +497,16 @@ export default function Dashboard() {
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-[#0a0a0a]/80 bg-gradient-to-br from-[#0A0A0A] via-[#0A0A0A]/90 to-[#0A0A0A]/70 pointer-events-none overflow-hidden"></div>
-      <div className="   text-white">
+    <div className="relative">
+      <div
+        className="fixed inset-0 bg-[#0a0a0a]/80 bg-gradient-to-br from-[#0A0A0A] via-[#0A0A0A]/90 to-[#0A0A0A]/70 pointer-events-none overflow-hidden"
+        // data-nextjs-scroll-focus-boundary
+      ></div>
+      <div className=" relative z-10  text-white">
         {/* Animated Background */}
 
         {/* Header */}
-        <header className="relative z-10 border-b border-gray-800">
+        <header className="  border-b border-gray-800">
           <div className="bg-transparent backdrop-blur-sm border-b border-[#333]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex flex-col md:flex-row items-center justify-between gap-5 w-full">
@@ -1223,6 +1222,6 @@ export default function Dashboard() {
           buyerId={buyer}
         />
       )}
-    </>
+    </div>
   );
 }

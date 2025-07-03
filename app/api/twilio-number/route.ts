@@ -18,7 +18,6 @@ export async function GET(request: NextRequest) {
 
     // Find all Twilio numbers for the user
     const user = await User.findOne({ _id: userId });
-    console.log("user:", user);
     return NextResponse.json({ user });
   } catch (error) {
     console.error("Error fetching Twilio numbers:", error);

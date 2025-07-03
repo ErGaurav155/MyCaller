@@ -25,7 +25,6 @@ export async function GET(request: NextRequest) {
       .skip(skip)
       .limit(limit)
       .lean();
-    console.log("leads", leads);
 
     if (!leads) {
       return NextResponse.json({ error: "Lead not found" }, { status: 404 });

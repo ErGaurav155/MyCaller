@@ -61,7 +61,6 @@ export const getRazerpayPlanInfo = async (productId: string) => {
 
     const plan = await Plan.findOne({ productId });
     if (!plan) {
-      console.log("plan not found");
       throw new Error(`Plan with productId ${productId} not found.`);
     }
     return JSON.parse(JSON.stringify(plan));

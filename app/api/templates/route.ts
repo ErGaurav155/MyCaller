@@ -22,9 +22,6 @@ export async function GET(request: NextRequest) {
       userId: userId,
     }).lean();
 
-    console.log("userId:", userId);
-
-    console.log("template:", template);
     // If no template exists, create a default one
     if (!template) {
       const defaultTemplate = {
