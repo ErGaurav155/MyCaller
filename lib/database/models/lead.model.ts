@@ -1,5 +1,12 @@
 import { Schema, model, Document, models } from "mongoose";
 
+export interface QuestionnaireItem {
+  question: string;
+  answer: string;
+  type: "name" | "email" | "phone" | "address" | "budget" | "problem";
+  required: boolean;
+}
+
 export interface ILead extends Document {
   userId: string;
   twilioNumber: string;
@@ -16,7 +23,19 @@ export interface ILead extends Document {
   source: "ai-call" | "manual";
   callDuration?: number;
   recordingUrl?: string;
+  questionnaire: QuestionnaireItem[]; // New field
 }
+
+const QuestionnaireSchema = new Schema<QuestionnaireItem>({
+  question: { type: String, required: true },
+  answer: { type: String, required: true },
+  type: {
+    type: String,
+    required: true,
+    enum: ["name", "email", "phone", "address", "budget", "problem"],
+  },
+  required: { type: Boolean, required: true },
+});
 
 const LeadSchema = new Schema<ILead>({
   userId: { type: String, required: true, ref: "User" },
@@ -43,6 +62,7 @@ const LeadSchema = new Schema<ILead>({
   },
   callDuration: { type: Number },
   recordingUrl: { type: String },
+  questionnaire: [QuestionnaireSchema], // New field
 });
 
 const Lead = models?.Lead || model<ILead>("Lead", LeadSchema);

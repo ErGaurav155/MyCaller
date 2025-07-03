@@ -3,10 +3,10 @@ import React from "react";
 const Feature = () => {
   return (
     <div className="container max-w-7xl mx-auto px-4">
-      <div className=" text-center mb-16 relative z-10">
+      <div className=" text-center pb-8 md:pb-16 relative z-10">
         {/* Features Grid */}
-        <div className="text-center mb-16 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+        <div className=" text-start md:text-center pb-10 md:pb-16 relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FF2E9F]">
             Powerful Features
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">

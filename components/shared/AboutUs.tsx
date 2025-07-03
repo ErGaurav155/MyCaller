@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function AboutUs() {
   return (
-    <section id="about" className="py-20 relative">
+    <section id="about" className="  pb-10 md:pb-20 relative">
       <div className="container max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
@@ -21,7 +21,7 @@ export function AboutUs() {
             </div>
           </div>
           <div className="md:w-1/2 md:pl-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+            <h2 className="text-3xl text-start md:text-4xl font-bold mb-6  text-[#FF2E9F]">
               About AiCaller
             </h2>
             <p className="text-gray-300 mb-6 font-mono text-lg">

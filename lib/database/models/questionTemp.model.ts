@@ -6,7 +6,7 @@ export interface Question {
   question: string;
   order: number;
   required: boolean;
-  type: "text" | "email" | "phone" | "number";
+  type: "name" | "email" | "phone" | "address" | "budget" | "problem";
 }
 
 // Interface for the document that includes Mongoose properties
@@ -30,7 +30,7 @@ const QuestionSchema = new Schema<Question>({
   type: {
     type: String,
     required: true,
-    enum: ["text", "email", "phone", "number"],
+    enum: ["name", "email", "phone", "address", "budget", "problem"],
   },
 });
 
@@ -62,7 +62,7 @@ export const defaultQuestions: Question[] = [
     question: "May I please have your name?",
     order: 1,
     required: true,
-    type: "text",
+    type: "name",
   },
   {
     _id: "2",
@@ -76,14 +76,21 @@ export const defaultQuestions: Question[] = [
     question: "What is your budget range for this project?",
     order: 3,
     required: false,
-    type: "text",
+    type: "budget",
   },
   {
     _id: "4",
+    question: "And, where did you lived?",
+    order: 4,
+    required: true,
+    type: "address",
+  },
+  {
+    _id: "5",
     question:
       "Could you please describe the problem or service you need help with?",
     order: 4,
     required: true,
-    type: "text",
+    type: "problem",
   },
 ];

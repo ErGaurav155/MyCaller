@@ -94,10 +94,10 @@ export default function PricingPage() {
       <div className="fixed  inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0A0A0A] to-[#0A0A0A]/95  pointer-events-none"></div>
       <Pricing />
       {/* Testimonials */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a]/80 backdrop-blur-sm ">
+      <section className="py-16 px-4 sm:px-6 lg:px-8  backdrop-blur-sm ">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-bold text-[#FF2E9F] mb-4">
               What Our Customers Say
             </h2>
             <p className="text-xl text-gray-300 font-mono">

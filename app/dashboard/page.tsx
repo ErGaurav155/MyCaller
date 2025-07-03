@@ -520,7 +520,7 @@ export default function Dashboard() {
                   <h1 className="text-xl lg:text-2xl font-bold text-white">
                     AI Call Assistant Dashboard
                   </h1>
-                  <p className="text-gray-400 mt-1 font-mono">
+                  <p className="text-gray-400 mt-1 ">
                     Manage your leads and monitor your AI assistant performance
                   </p>
                 </div>
@@ -547,7 +547,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 font-mono">Total Calls</p>
+                  <p className="text-sm text-gray-400 ">Total Calls</p>
                   <p className="text-3xl font-bold">{callStats.totalCalls}</p>
                 </div>
                 <PhoneCall className="h-8 w-8 text-blue-400" />
@@ -559,7 +559,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 font-mono">Total Leads</p>
+                  <p className="text-sm text-gray-400 ">Total Leads</p>
                   <p className="text-3xl font-bold">{callStats.totalLeads}</p>
                 </div>
                 <Users className="h-8 w-8 text-green-400" />
@@ -571,7 +571,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 font-mono">Pending</p>
+                  <p className="text-sm text-gray-400 ">Pending</p>
                   <p className="text-3xl font-bold">{callStats.pendingLeads}</p>
                 </div>
                 <AlertCircle className="h-8 w-8 text-orange-400" />
@@ -583,7 +583,7 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 font-mono">Resolved</p>
+                  <p className="text-sm text-gray-400 ">Resolved</p>
                   <p className="text-3xl font-bold">
                     {callStats.resolvedLeads}
                   </p>
@@ -658,10 +658,10 @@ export default function Dashboard() {
                     variant="secondary"
                     className="bg-gray-800 text-gray-300"
                   >
-                    total{/* {leads.length} Total */}
+                    {callStats.totalLeads} Total
                   </Badge>
                 </CardTitle>
-                <CardDescription className="text-gray-400 font-mono">
+                <CardDescription className="text-gray-400 ">
                   Manage and track your AI-generated leads
                 </CardDescription>
               </CardHeader>
@@ -676,7 +676,7 @@ export default function Dashboard() {
             <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
               <CardHeader>
                 <CardTitle>Your Twilio Numbers</CardTitle>
-                <CardDescription className="text-gray-400 font-mono">
+                <CardDescription className="text-gray-400 ">
                   Manage your AI-powered phone numbers
                 </CardDescription>
               </CardHeader>
@@ -685,7 +685,7 @@ export default function Dashboard() {
                   <div className="border border-gray-800 rounded-lg p-1 md:p-4 hover:border-gray-700 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg font-mono">
+                        <h3 className="font-semibold text-lg ">
                           {userInfo.twilioNumber}
                         </h3>
                         <div className="flex items-center space-x-4 mt-1">
@@ -704,12 +704,12 @@ export default function Dashboard() {
                           </Badge>
                         </div>
                         <div className="mt-2 flex flex-col sm:flex-row items-center md:space-x-2">
-                          <span className="text-sm text-gray-400 font-mono">
+                          <span className="text-sm text-gray-400 ">
                             Forward to:
                           </span>
 
                           <div className="flex flex-wrap items-center md:space-x-2">
-                            <span className="text-white font-mono">
+                            <span className="text-white ">
                               {userInfo.phone}
                             </span>
                             <Button
@@ -735,7 +735,7 @@ export default function Dashboard() {
             <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
               <CardHeader className="p-2 md:p-4">
                 <CardTitle className="flex flex-col gap-3  items-center justify-between">
-                  <p className=""> AI Question Templates</p>
+                  <p className="p-4"> AI Question Templates</p>
                   <Dialog
                     open={isTemplateDialogOpen}
                     onOpenChange={setIsTemplateDialogOpen}
@@ -798,7 +798,7 @@ export default function Dashboard() {
                                     className="border border-gray-700 rounded-lg p-4"
                                   >
                                     <div className="flex items-center justify-between mb-3">
-                                      <span className="text-sm text-gray-400 font-mono">
+                                      <span className="text-sm text-gray-400 ">
                                         Question {index + 1}
                                       </span>
                                       <Button
@@ -928,7 +928,7 @@ export default function Dashboard() {
                     </DialogContent>
                   </Dialog>
                 </CardTitle>
-                <CardDescription className="text-gray-400 font-mono">
+                <CardDescription className="text-gray-400 ">
                   Configure how your AI assistant interacts with callers
                 </CardDescription>
               </CardHeader>
@@ -939,7 +939,7 @@ export default function Dashboard() {
                       <h3 className="font-semibold text-white mb-2">
                         Current Greeting
                       </h3>
-                      <p className="text-gray-300 bg-gray-800/50 p-3 rounded-lg font-mono text-sm">
+                      <p className="text-gray-300 bg-gray-800/50 p-3 rounded-lg  ">
                         {selectedTemplate.greeting}
                       </p>
                     </div>
@@ -955,7 +955,7 @@ export default function Dashboard() {
                             className="flex items-center justify-between flex-col md:flex-row gap-3 md:gap-0 bg-gray-800/50 p-3 rounded-lg"
                           >
                             <div>
-                              <span className="text-sm text-gray-400 font-mono">
+                              <span className="text-sm text-gray-400 ">
                                 Q{index + 1}:
                               </span>
                               <span className="text-white ml-2">
@@ -984,7 +984,7 @@ export default function Dashboard() {
                       <h3 className="font-semibold text-white mb-2">
                         Closing Message
                       </h3>
-                      <p className="text-gray-300 bg-gray-800/50 p-3 rounded-lg font-mono text-sm">
+                      <p className="text-gray-300 bg-gray-800/50 p-3 rounded-lg ">
                         {selectedTemplate.closingMessage}
                       </p>
                     </div>
@@ -998,9 +998,9 @@ export default function Dashboard() {
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
               <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
-                <CardHeader className="p-2">
+                <CardHeader className="p-4">
                   <CardTitle>Monthly Call Stats</CardTitle>
-                  <CardDescription className="text-gray-400 font-mono">
+                  <CardDescription className="text-gray-400 ">
                     Track your call volume and lead generation
                   </CardDescription>
                 </CardHeader>
@@ -1013,7 +1013,7 @@ export default function Dashboard() {
                       >
                         <div>
                           <p className="font-semibold">{stat.period}</p>
-                          <p className="text-sm text-gray-400 font-mono">
+                          <p className="text-sm text-gray-400 ">
                             {stat.calls} calls • {stat.leads} leads
                           </p>
                         </div>
@@ -1030,9 +1030,9 @@ export default function Dashboard() {
               </Card>
 
               <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
-                <CardHeader className="p-2">
+                <CardHeader className="p-4">
                   <CardTitle>Performance Metrics</CardTitle>
-                  <CardDescription className="text-gray-400 font-mono">
+                  <CardDescription className="text-gray-400 ">
                     Key performance indicators
                   </CardDescription>
                 </CardHeader>
@@ -1040,9 +1040,7 @@ export default function Dashboard() {
                   <div className="space-y-6">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-mono">
-                          Lead Conversion Rate
-                        </span>
+                        <span className="text-sm ">Lead Conversion Rate</span>
                         <span className="text-sm font-bold">64%</span>
                       </div>
                       <div className="w-full bg-gray-800 rounded-full h-2">
@@ -1055,9 +1053,7 @@ export default function Dashboard() {
 
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-mono">
-                          Average Response Time
-                        </span>
+                        <span className="text-sm ">Average Response Time</span>
                         <span className="text-sm font-bold">2.3s</span>
                       </div>
                       <div className="w-full bg-gray-800 rounded-full h-2">
@@ -1070,9 +1066,7 @@ export default function Dashboard() {
 
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-mono">
-                          Customer Satisfaction
-                        </span>
+                        <span className="text-sm ">Customer Satisfaction</span>
                         <span className="text-sm font-bold">4.8/5</span>
                       </div>
                       <div className="w-full bg-gray-800 rounded-full h-2">

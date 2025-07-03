@@ -36,6 +36,7 @@ import OTPVerification from "../shared/OTPVerification";
 import { countryCodes } from "@/constant";
 import Script from "next/script";
 import { getRazerpayPlanInfo } from "@/lib/action/plan.action";
+import { updateCredits } from "@/lib/action/user.actions";
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -164,6 +165,7 @@ export default function PaymentModal({
               duration: 3000,
               className: "success-toast",
             });
+            await updateCredits(buyerId, plan.callLimit);
 
             await createRazerPaySubscription(
               buyerId,

@@ -3,10 +3,10 @@ import React from "react";
 
 export function Testimonial() {
   return (
-    <section id="reviews" className="py-20 relative">
+    <section id="reviews" className="pb-5 md:pb-20 relative">
       <div className="container max-w-7xl mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+        <div className="text-start md:text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FF2E9F]">
             Testimonials
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono">

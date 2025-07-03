@@ -107,3 +107,29 @@ export async function deleteUser(clerkId: string) {
     handleError(error);
   }
 }
+
+// lib/actions/user.actions.ts
+export async function updateCredits(userDbId: string, creditFee: number) {
+  try {
+    await connectToDatabase();
+
+    // Prevent negative credits
+    if (creditFee < 0) {
+      const user = await User.findById(userDbId);
+      if (user.creditBalance + creditFee < 0) {
+        throw new Error("Insufficient credits");
+      }
+    }
+
+    const updatedUserCredits = await User.findOneAndUpdate(
+      { _id: userDbId },
+      { $inc: { creditBalance: creditFee } },
+      { new: true }
+    );
+
+    if (!updatedUserCredits) throw new Error("User credits update failed");
+    return JSON.parse(JSON.stringify(updatedUserCredits));
+  } catch (error) {
+    handleError(error);
+  }
+}

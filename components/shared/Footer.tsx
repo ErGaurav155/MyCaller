@@ -54,17 +54,18 @@ export function Footer() {
       <div className="container max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <div className="flex items-center mb-6">
-              <div className="relative w-10 h-10 mr-3">
+            <Link href={"/"} className="flex items-center mb-6">
+              <div className="relative w-8 h-8 lg:w-10 lg:h-10 mr-1 lg:mr-2">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-pulse"></div>
                 <div className="absolute inset-1 rounded-full bg-[#0A0A0A] flex items-center justify-center">
-                  <i className="fas fa-satellite text-[#00F0FF]"></i>
+                  <i className="fas fa-robot text-[#622a8f]"></i>
                 </div>
               </div>
-              <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
-                AiCall<span className="text-[#B026FF]">er</span>
-              </h2>
-            </div>
+              <h1 className="text-base lg:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
+                Catch<span className="text-[#B026FF]">Customer</span>
+                <span>Call</span>
+              </h1>
+            </Link>
             <p className="text-gray-400 mb-6">
               Connecting civilizations across the cosmos with advanced AI
               communication solutions since 3047.

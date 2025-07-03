@@ -86,7 +86,7 @@ const ContactForm = () => {
   };
 
   return (
-    <section id="contact" className="py-20 w-full relative">
+    <section id="contact" className="pb-10 md:pb-20 w-full relative">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#0A0A0A]/70 to-[#0A0A0A] z-10"></div>
         <Image
@@ -99,8 +99,8 @@ const ContactForm = () => {
         />
       </div>
       <div className="container mx-auto max-w-4xl p-2 md:px-4  ">
-        <div className="text-center mb-12 backdrop-blur-md">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
+        <div className="text-start md:text-center mb-12 backdrop-blur-md">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4  text-[#FF2E9F]">
             Contact Our AiCaller Team
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto font-mono ">

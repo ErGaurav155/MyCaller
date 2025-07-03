@@ -9,8 +9,7 @@ export interface IUser extends Document {
   plan: "free" | "starter" | "professional" | "enterprise";
   isActive: boolean;
   twilioNumber: string;
-  monthlyQuota: number;
-  currentMonthUsage: number;
+  creditBalance: number;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -29,9 +28,8 @@ const UserSchema = new Schema<IUser>({
     enum: ["free", "starter", "professional", "enterprise"],
   },
   isActive: { type: Boolean, default: false },
-  twilioNumber: { type: String },
-  monthlyQuota: { type: Number, default: 0, required: true },
-  currentMonthUsage: { type: Number, default: 0, required: true },
+  twilioNumber: { type: String, unique: true },
+  creditBalance: { type: Number, default: 0, required: true },
 });
 
 const User = models?.User || model<IUser>("User", UserSchema);

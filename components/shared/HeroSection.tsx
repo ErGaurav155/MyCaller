@@ -20,14 +20,14 @@ export function HeroSection() {
           className="w-screen h-screen object-cover  object-top"
         />
       </div>
-      <div className="container mx-auto px-4 py-16 relative z-30 flex flex-col md:flex-row items-center max-w-7xl">
+      <div className="container mx-auto px-4 pb-5  md:pb-16 relative z-30 flex flex-col md:flex-row items-center max-w-7xl">
         <div className="md:w-1/2 mb-10 md:mb-0">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             <span className="block text-[#00F0FF]">Advanced AI</span>
             <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#B026FF] to-[#FF2E9F]">
               Call Assistant
             </span>
-            <span className="block text-white">For The Businesses</span>
+            <span className="block text-[#db6637]">For The Businesses</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-xl font-mono">
             Advanced Customer Call handling with our AI assistants. Now

@@ -21,11 +21,11 @@ export function NavBar() {
       <div className=" mx-auto md:px-4 max-w-7xl py-4 flex justify-between gap-1 lg:gap-2 items-center">
         {/* Logo */}
         <Link href={"/"} className="flex items-center">
-          <div className="relative w-7 h-7 lg:w-10 lg:h-10 mr-1 lg:mr-2">
+          <div className="relative w-8 h-8 lg:w-10 lg:h-10 mr-1 lg:mr-2">
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] animate-pulse"></div>
             <div className="absolute inset-1 rounded-full bg-[#0A0A0A] flex items-center justify-center">
               {/* <i className="fas fa-satellite text-[#00F0FF] h-4 w-4"></i> */}
-              <Headset className="h-4 md:h-5 md:w-5 w-4 text-[#00F0FF]" />
+              <i className="fas fa-robot text-[#622a8f]"></i>
             </div>
           </div>
           <h1 className="text-base lg:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
@@ -34,7 +34,7 @@ export function NavBar() {
           </h1>
         </Link>
         {/* Desktop Orbital Navigation */}
-        <nav className="hidden md:flex justify-evenly items-center space-x-5 lg:space-x-8 font-medium text-sm">
+        <nav className="hidden md:flex justify-evenly items-center space-x-5 lg:space-x-8 font-medium text-sm lg:text-base">
           {[
             { id: "/Features", label: "Features" },
             { id: "/pricing", label: "Pricing" },

@@ -22,14 +22,14 @@ export default function HomePage() {
       <AiAssiFeature />
 
       <Pricing />
-      <section className="py-16 px-4 sm:px-6 lg:px-8 relative z-30 ">
+      <section className="pb-8 md:pb-16 px-4 sm:px-6 lg:px-8 relative z-30 ">
         <div className="max-w-7xl  mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#FF2E9F] mb-6">
+              <h2 className="text-3xl text-start md:text-center md:text-4xl font-bold text-[#FF2E9F] mb-6">
                 Transform Your Business Communication
               </h2>
-              <p className="text-xl text-gray-100 mb-8 font-mono">
+              <p className="text-xl text-start md:text-center text-gray-100 mb-8 font-mono">
                 Stop losing potential customers to missed calls. Our AI
                 assistant ensures every caller gets professional attention, even
                 when you are busy.

@@ -57,15 +57,15 @@ export function WorkFlow() {
   }, []);
 
   return (
-    <section className="py-20 relative">
+    <section className=" pt-2  md:pb-20 relative">
       <div
         id="stars-container"
         className="fixed inset-0  pointer-events-none"
       ></div>
       <div className="fixed  inset-0 bg-gradient-to-br from-[#0A0A0A] via-[#0A0A0A] to-[#0A0A0A]/95  pointer-events-none"></div>
       <div className="container max-w-7xl mx-auto px-4">
-        <div className="text-center mb-16 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#B026FF]">
+        <div className="text-start md:text-center mb-16 relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FF2E9F]">
             How It Works
           </h2>
           <p className="text-lg lg:text-xl text-gray-300 max-w-2xl mx-auto font-mono">

@@ -1,47 +1,47 @@
-import { NextRequest, NextResponse } from "next/server";
-import twilio from "twilio";
-import { connectToDatabase } from "@/lib/database/mongoose";
-import User from "@/lib/database/models/user.model";
+// import { NextRequest, NextResponse } from "next/server";
+// import twilio from "twilio";
+// import { connectToDatabase } from "@/lib/database/mongoose";
+// import User from "@/lib/database/models/user.model";
 
-export async function POST(req: NextRequest) {
-  try {
-    const formData = await req.formData();
-    const dialStatus = formData.get("DialCallStatus") as string;
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-    const callSid = searchParams.get("callSid");
-    const callerNumber = searchParams.get("callerNumber");
+// export async function POST(req: NextRequest) {
+//   try {
+//     const formData = await req.formData();
+//     const dialStatus = formData.get("DialCallStatus") as string;
+//     const { searchParams } = new URL(req.url);
+//     const userId = searchParams.get("userId");
+//     const callSid = searchParams.get("callSid");
+//     const callerNumber = searchParams.get("callerNumber");
 
-    const response = new twilio.twiml.VoiceResponse();
+//     const response = new twilio.twiml.VoiceResponse();
 
-    if (dialStatus !== "completed") {
-      await connectToDatabase();
-      const user = await User.findById(userId);
+//     if (dialStatus !== "completed") {
+//       await connectToDatabase();
+//       const user = await User.findById(userId);
 
-      if (user) {
-        // Redirect to AI assistant
-        response.say("Bye,Have A nice Day");
-        response.redirect(
-          `/api/twilio/ai-assistant?userId=${userId}&callSid=${callSid}&callerNumber=${callerNumber}&step=0`
-        );
-      } else {
-        response.say("Sorry, we cannot process your call at this time.");
-        response.hangup();
-      }
-    }
+//       if (user) {
+//         // Redirect to AI assistant
+//         response.say("Bye,Have A nice Day");
+//         response.redirect(
+//           `/api/twilio/ai-assistant?userId=${userId}&callSid=${callSid}&callerNumber=${callerNumber}&step=0`
+//         );
+//       } else {
+//         response.say("Sorry, we cannot process your call at this time.");
+//         response.hangup();
+//       }
+//     }
 
-    return new NextResponse(response.toString(), {
-      headers: { "Content-Type": "text/xml" },
-    });
-  } catch (error) {
-    console.error("Status callback error:", error);
+//     return new NextResponse(response.toString(), {
+//       headers: { "Content-Type": "text/xml" },
+//     });
+//   } catch (error) {
+//     console.error("Status callback error:", error);
 
-    const response = new twilio.twiml.VoiceResponse();
-    response.say("Sorry, we encountered an error.");
-    response.hangup();
+//     const response = new twilio.twiml.VoiceResponse();
+//     response.say("Sorry, we encountered an error.");
+//     response.hangup();
 
-    return new NextResponse(response.toString(), {
-      headers: { "Content-Type": "text/xml" },
-    });
-  }
-}
+//     return new NextResponse(response.toString(), {
+//       headers: { "Content-Type": "text/xml" },
+//     });
+//   }
+// }

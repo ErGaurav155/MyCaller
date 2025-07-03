@@ -21,8 +21,7 @@ export interface CreateUserType {
   twilioNumber?: string;
   isActive: boolean;
   plan: "free" | "starter" | "professional" | "enterprise";
-  monthlyQuota: number;
-  currentMonthUsage: number;
+  creditBalance: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -32,8 +31,7 @@ export interface UpdateUserType {
   twilioNumber?: string;
   isActive: boolean;
   plan: string;
-  monthlyQuota: number;
-  currentMonthUsage: number;
+  creditBalance: number;
 }
 
 export interface CallSession {

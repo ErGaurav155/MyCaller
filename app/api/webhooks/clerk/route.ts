@@ -67,9 +67,7 @@ export async function POST(req: Request) {
         | "starter"
         | "professional"
         | "enterprise") || "free";
-    const monthlyQuota = (public_metadata?.monthlyQuota as number) || 0;
-    const currentMonthUsage =
-      (public_metadata?.currentMonthUsage as number) || 0;
+    const creditBalance = (public_metadata?.monthlyQuota as number) || 0;
 
     const user = {
       clerkId: id,
@@ -79,8 +77,7 @@ export async function POST(req: Request) {
       twilioNumber,
       isActive,
       plan,
-      monthlyQuota,
-      currentMonthUsage,
+      creditBalance,
     };
 
     try {
@@ -118,9 +115,8 @@ export async function POST(req: Request) {
         | "starter"
         | "professional"
         | "enterprise") || "free";
-    const monthlyQuota = (public_metadata?.monthlyQuota as number) || 0;
-    const currentMonthUsage =
-      (public_metadata?.currentMonthUsage as number) || 0;
+    const creditBalance = (public_metadata?.monthlyQuota as number) || 0;
+
     try {
       const updatedUser = await updateUser(id, {
         username: username || "",
@@ -128,8 +124,7 @@ export async function POST(req: Request) {
         twilioNumber,
         isActive,
         plan,
-        monthlyQuota,
-        currentMonthUsage,
+        creditBalance,
       });
 
       return NextResponse.json({ message: "OK", user: updatedUser });

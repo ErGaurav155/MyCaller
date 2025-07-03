@@ -34,7 +34,7 @@ export const Pricing = () => {
       setIsSubscribed(false);
     } else {
       const isSubscribed = await getSubscriptionInfo(buyerId);
-      if (isSubscribed === 0) {
+      if (isSubscribed.length === 0) {
         setIsSubscribed(false);
       } else {
         setIsSubscribed(true);
@@ -66,15 +66,15 @@ export const Pricing = () => {
 
   return (
     <div className="min-h-screen     text-white">
-      <section className="py-16 px-4 sm:px-6 lg:px-8 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center bg-blue-100/10 text-blue-400 border border-blue-400/30 rounded-full px-4 py-1 mb-4">
+      <section className=" py-5 md:py-16  px-4 sm:px-6 lg:px-8 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto text-start md:text-center">
+          <div className="inline-flex items-center bg-green-900/10 text-blue-400 border border-blue-400/30 rounded-full px-4 py-1 mb-4">
             <Zap className="h-4 w-4 mr-1" />
             <span className="text-sm font-medium">
               Simple, Transparent Pricing
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] to-[#FF2E9F]">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-[#FF2E9F]">
             Choose Your Perfect Plan
           </h1>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto font-mono">
@@ -83,7 +83,7 @@ export const Pricing = () => {
           </p>
 
           {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="flex items-center justify-center gap-2 md:gap-4 mb-12">
             <span
               className={`text-sm font-medium ${
                 billingCycle === "monthly" ? "text-white" : "text-gray-500"
@@ -105,14 +105,14 @@ export const Pricing = () => {
             >
               Yearly
             </span>
-            <div className="bg-green-900/20 text-green-400 border border-green-400/30 rounded-full px-3 py-1 ml-2">
-              Save up to 17%
+            <div className="bg-green-900/20 text-green-400 border border-green-400/30 rounded-full px-1 md:px-3 py-1 ml-2 ">
+              Save 17%
             </div>
           </div>
         </div>
       </section>
       {/* Pricing Cards */}
-      <section className="px-4 sm:px-6 lg:px-8 pb-16">
+      <section className="px-4 sm:px-6 lg:px-8 pb-5 md:pb-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {pricingPlans.map((plan) => (
@@ -219,10 +219,10 @@ export const Pricing = () => {
         </div>
       </section>
       {/* Features Comparison */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8  backdrop-blur-sm">
+      <section className=" pb-5  md:pb-16 px-4 sm:px-6 lg:px-8  backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
+          <div className="text-start md:text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#FF2E9F] mb-4">
               Compare All Features
             </h2>
             <p className="text-xl text-gray-300">
