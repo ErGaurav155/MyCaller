@@ -13,7 +13,12 @@ import {
   CheckCircle,
   MessageSquare,
 } from "lucide-react";
-
+export interface QuestionnaireItem {
+  question: string;
+  answer: string;
+  type: "name" | "email" | "phone" | "address" | "budget" | "problem";
+  required: boolean;
+}
 interface Lead {
   _id: string;
   name: string;
@@ -23,8 +28,14 @@ interface Lead {
   problem: string;
   address: string;
   status: "pending" | "resolved";
+  source: string;
+  callDuration?: number;
   createdAt: string;
+  recordingUrl?: string;
   twilioNumber: string;
+  resolvedAt?: string;
+  notes?: string;
+  questionnaire: QuestionnaireItem[]; // New field
 }
 
 interface Pagination {
@@ -152,123 +163,203 @@ export function LeadPage({
       setLeads([
         {
           _id: "1",
-          name: "Rahul Sharma",
-          phone: "+91 98765 43210",
-          email: "rahul@example.com",
-          budget: "₹50,000 - ₹1,00,000",
-          problem: "Need digital marketing services for restaurant",
-          address: "Mumbai, Maharashtra",
+          twilioNumber: "+15551234567",
+          phone: "+15559876543",
+          name: "John Smith",
+          email: "john.smith@example.com",
+          address: "123 Main St, New York, NY 10001",
+          budget: "$10,000 - $15,000",
+          problem: "Need help with kitchen remodeling",
           status: "pending",
-          createdAt: "2025-01-08T10:30:00Z",
-          twilioNumber: "+1 234 567 8901",
+          createdAt: "2025-03-15T10:30:00Z",
+          source: "ai-call",
+          callDuration: 245,
+          recordingUrl: "https://api.twilio.com/recordings/rec123",
+          questionnaire: [
+            {
+              question: "May I please have your name?",
+              answer: "John Smith",
+              type: "name",
+              required: true,
+            },
+            {
+              question: "Could you please provide your email address?",
+              answer: "john.smith@example.com",
+              type: "email",
+              required: true,
+            },
+            {
+              question: "What is your budget range for this project?",
+              answer: "$10,000 - $15,000",
+              type: "budget",
+              required: false,
+            },
+            {
+              question: "Could you please describe the problem?",
+              answer: "Need help with kitchen remodeling",
+              type: "problem",
+              required: true,
+            },
+          ],
         },
         {
           _id: "2",
-          name: "Priya Patel",
-          phone: "+91 87654 32109",
-          email: "priya@example.com",
-          budget: "₹25,000 - ₹50,000",
-          problem: "Website development for small business",
-          address: "Ahmedabad, Gujarat",
+          twilioNumber: "+15551234567",
+          phone: "+15557654321",
+          name: "Sarah Johnson",
+          email: "sarah.j@example.com",
+          address: "456 Oak Ave, Los Angeles, CA 90001",
+          budget: "$5,000 - $7,000",
+          problem: "Bathroom leak repair needed",
           status: "resolved",
-          createdAt: "2025-01-07T14:15:00Z",
-          twilioNumber: "+1 234 567 8901",
+          createdAt: "2025-02-28T14:15:00Z",
+          resolvedAt: "2025-03-05T09:45:00Z",
+          notes: "Customer approved estimate, scheduled for March 15",
+          source: "manual",
+          questionnaire: [
+            {
+              question: "May I please have your name?",
+              answer: "Sarah Johnson",
+              type: "name",
+              required: true,
+            },
+            {
+              question: "Could you please provide your email address?",
+              answer: "sarah.j@example.com",
+              type: "email",
+              required: true,
+            },
+            {
+              question: "And, where do you live?",
+              answer: "456 Oak Ave, Los Angeles, CA 90001",
+              type: "address",
+              required: true,
+            },
+            {
+              question: "What is your budget range for this project?",
+              answer: "$5,000 - $7,000",
+              type: "budget",
+              required: false,
+            },
+          ],
         },
         {
           _id: "3",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
+          twilioNumber: "+15559876543",
+          phone: "+15554321678",
+          name: "Michael Brown",
+          email: "michael.b@example.com",
+          address: "789 Pine Rd, Chicago, IL 60601",
+          budget: "Not sure",
+          problem: "Whole house rewiring needed",
           status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
+          createdAt: "2025-03-20T16:45:00Z",
+          source: "ai-call",
+          callDuration: 382,
+          recordingUrl: "https://api.twilio.com/recordings/rec456",
+          questionnaire: [
+            {
+              question: "May I please have your name?",
+              answer: "Michael Brown",
+              type: "name",
+              required: true,
+            },
+            {
+              question: "Could you please provide your email address?",
+              answer: "michael.b@example.com",
+              type: "email",
+              required: true,
+            },
+            {
+              question: "What is your budget range for this project?",
+              answer: "Not sure",
+              type: "budget",
+              required: false,
+            },
+            {
+              question: "Could you please describe the problem?",
+              answer: "Whole house rewiring needed",
+              type: "problem",
+              required: true,
+            },
+          ],
         },
         {
           _id: "4",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
+          twilioNumber: "+15559876543",
+          phone: "+15558765432",
+          name: "Emily Wilson",
+          email: "emily.w@example.com",
+          address: "321 Elm St, Houston, TX 77001",
+          budget: "$20,000+",
+          problem: "New home construction consultation",
+          status: "resolved",
+          createdAt: "2025-01-10T11:20:00Z",
+          resolvedAt: "2025-01-12T15:10:00Z",
+          source: "manual",
+          questionnaire: [
+            {
+              question: "May I please have your name?",
+              answer: "Emily Wilson",
+              type: "name",
+              required: true,
+            },
+            {
+              question: "And, where do you live?",
+              answer: "321 Elm St, Houston, TX 77001",
+              type: "address",
+              required: true,
+            },
+            {
+              question: "What is your budget range for this project?",
+              answer: "$20,000+",
+              type: "budget",
+              required: false,
+            },
+          ],
         },
         {
           _id: "5",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
-        },
-        {
-          _id: "6",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
-        },
-        {
-          _id: "7",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
-        },
-        {
-          _id: "8",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
-        },
-        {
-          _id: "9",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
-        },
-        {
-          _id: "10",
-          name: "Amit Kumar",
-          phone: "+91 76543 21098",
-          email: "amit@example.com",
-          budget: "₹1,00,000+",
-          problem: "Complete IT infrastructure setup",
-          address: "Delhi, India",
-          status: "pending",
-          createdAt: "2025-01-06T09:45:00Z",
-          twilioNumber: "+1 234 567 8901",
+          twilioNumber: "+15550123456",
+          phone: "+15551234567",
+          name: "David Lee",
+          email: "david.lee@example.com",
+          address: "654 Maple Dr, Phoenix, AZ 85001",
+          budget: "$8,000 - $10,000",
+          problem: "Roof repair after storm damage",
+          status: "resolved",
+          createdAt: "2025-03-01T09:00:00Z",
+          resolvedAt: "2025-03-10T13:30:00Z",
+          notes: "Insurance claim processed, work completed March 8",
+          source: "ai-call",
+          callDuration: 510,
+          recordingUrl: "https://api.twilio.com/recordings/rec789",
+          questionnaire: [
+            {
+              question: "May I please have your name?",
+              answer: "David Lee",
+              type: "name",
+              required: true,
+            },
+            {
+              question: "Could you please provide your email address?",
+              answer: "david.lee@example.com",
+              type: "email",
+              required: true,
+            },
+            {
+              question: "And, where do you live?",
+              answer: "654 Maple Dr, Phoenix, AZ 85001",
+              type: "address",
+              required: true,
+            },
+            {
+              question: "Could you please describe the problem?",
+              answer: "Roof repair after storm damage",
+              type: "problem",
+              required: true,
+            },
+          ],
         },
       ]);
 
@@ -293,8 +384,9 @@ export function LeadPage({
         {leads.map((lead) => (
           <div
             key={lead._id}
-            className="border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors"
+            className="border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors bg-[#0a0a0a]"
           >
+            {/* Header with name and status */}
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-semibold text-lg">{lead.name}</h3>
@@ -302,27 +394,25 @@ export function LeadPage({
                   {lead.phone} • {lead.email}
                 </p>
               </div>
-              <div className="flex items-center space-x-2">
-                <Badge
-                  variant={
-                    lead.status === "pending" ? "destructive" : "default"
-                  }
-                  className={
+              <div className="flex flex-wrap items-center justify-center gap-1 md:gap-2 space-x-1 md:space-x-2">
+                <span
+                  className={`px-2 py-1 rounded text-xs font-medium ${
                     lead.status === "pending"
-                      ? "bg-orange-500/20 text-orange-300 border-orange-500/30"
-                      : "bg-green-500/20 text-green-300 border-green-500/30"
-                  }
+                      ? "bg-orange-500/20 text-orange-300 border border-orange-500/30"
+                      : lead.status === "resolved"
+                      ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                      : "bg-red-500/20 text-red-300 border border-red-500/30"
+                  }`}
                 >
-                  {lead.status === "pending" ? (
-                    <AlertCircle className="h-3 w-3 mr-1" />
-                  ) : (
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                  )}
                   {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
-                </Badge>
+                </span>
+                <span className="px-2 py-1 rounded text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                  {lead.source === "ai-call" ? "AI Call" : "Manual"}
+                </span>
               </div>
             </div>
 
+            {/* Main content grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
               <div>
                 <p className="text-sm text-gray-400 font-mono">Budget</p>
@@ -332,8 +422,32 @@ export function LeadPage({
                 <p className="text-sm text-gray-400 font-mono">Location</p>
                 <p className="text-white">{lead.address}</p>
               </div>
+              {lead.callDuration && (
+                <div>
+                  <p className="text-sm text-gray-400 font-mono">
+                    Call Duration
+                  </p>
+                  <p className="text-white">
+                    {Math.floor(lead.callDuration / 60)}m{" "}
+                    {lead.callDuration % 60}s
+                  </p>
+                </div>
+              )}
+              {lead.recordingUrl && (
+                <div>
+                  <p className="text-sm text-gray-400 font-mono">Recording</p>
+                  <a
+                    href={lead.recordingUrl}
+                    target="_blank"
+                    className="text-blue-400 hover:text-blue-300 text-sm font-mono"
+                  >
+                    Listen
+                  </a>
+                </div>
+              )}
             </div>
 
+            {/* Problem description */}
             <div className="mb-3">
               <p className="text-sm text-gray-400 font-mono">
                 Problem Description
@@ -341,29 +455,75 @@ export function LeadPage({
               <p className="text-white">{lead.problem}</p>
             </div>
 
+            {/* Questionnaire */}
+            {lead.questionnaire.length > 0 && (
+              <div className="mb-1 md:mb-3">
+                <p className="text-sm text-gray-400 font-mono mb-2">
+                  Questionnaire
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-3">
+                  {lead.questionnaire.map((item, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-800 rounded p-1 md:p-3"
+                    >
+                      <p className="text-gray-400 text-sm mb-1">
+                        {item.question}
+                      </p>
+                      <p className="text-white">{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Notes */}
+            {lead.notes && (
+              <div className="mb-3">
+                <p className="text-sm text-gray-400 font-mono">Notes</p>
+                <p className="text-white">{lead.notes}</p>
+              </div>
+            )}
+
+            {/* Footer with date and actions */}
             <div className="flex flex-col sm:flex-row gap-3 md:gap-0 items-center justify-between">
               <div className="flex items-center text-sm text-gray-400 font-mono">
-                <Calendar className="h-4 w-4 mr-1" />
-                {formatDate(lead.createdAt)}
-              </div>
-              <div className="flex space-x-1  md:space-x-2">
-                {lead.status === "pending" && (
-                  <Button
-                    size="sm"
-                    onClick={() => handleStatusChange(lead._id, "resolved")}
-                    className="bg-green-600 hover:bg-green-700 text-black"
-                  >
-                    Mark Resolved
-                  </Button>
+                <span className="mr-1">📅</span>
+                {new Date(lead.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+                {lead.resolvedAt && (
+                  <span className="ml-3">
+                    Resolved:{" "}
+                    {new Date(lead.resolvedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
                 )}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-gray-600 bg-[#0a0a0a] text-white hover:bg-gray-700 hover:text-white"
-                >
-                  <MessageSquare className="h-4 w-4 mr-1" />
-                  WhatsApp
-                </Button>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 ">
+                {lead.status === "pending" && (
+                  <>
+                    <button
+                      onClick={() => handleStatusChange(lead._id, "resolved")}
+                      className="flex-1 p-2 md:px-3 py-1.5 text-sm rounded bg-green-600 hover:bg-green-700 text-black"
+                    >
+                      Resolved
+                    </button>
+                    <button
+                      onClick={() => handleStatusChange(lead._id, "pending")}
+                      className="flex-1 p-2 md:px-3 py-1.5 text-sm rounded bg-red-600 hover:bg-red-700 text-black"
+                    >
+                      Pending
+                    </button>
+                  </>
+                )}
+                <button className="w-auto  p-2 md:px-3 py-1.5 text-sm rounded border border-gray-600 bg-[#0a0a0a] text-white hover:bg-gray-700 hover:text-white">
+                  <span className="mr-1 inline-block">💬</span>WhatsApp
+                </button>
               </div>
             </div>
           </div>

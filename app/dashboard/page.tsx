@@ -361,8 +361,16 @@ export default function Dashboard() {
               const statsRes = await fetch(`/api/summary?userId=${buyer}`);
 
               const statsData = await statsRes.json();
-
-              setCallStats(statsData.stats);
+              if (statsData.length === 0) {
+                setCallStats({
+                  pendingLeads: 0,
+                  totalCalls: 0,
+                  resolvedLeads: 0,
+                  totalLeads: 0,
+                });
+              } else {
+                setCallStats(statsData.stats);
+              }
               const analyticsRes = await fetch(`/api/stats?userId=${buyer}`);
 
               const analyticsData = await analyticsRes.json();
@@ -651,12 +659,12 @@ export default function Dashboard() {
           {/* Leads Tab */}
           <TabsContent value="leads" className="space-y-6">
             <Card className="bg-[#0a0a0a]/60 border text-white border-gray-800">
-              <CardHeader>
-                <CardTitle className="flex items-center  justify-between">
+              <CardHeader className="px-2">
+                <CardTitle className="flex items-center justify-between">
                   Recent Leads
                   <Badge
                     variant="secondary"
-                    className="bg-gray-800 text-gray-300"
+                    className="bg-gray-800 text-gray-300 "
                   >
                     {callStats.totalLeads} Total
                   </Badge>
@@ -674,7 +682,7 @@ export default function Dashboard() {
           {/* Twilio Numbers Tab */}
           <TabsContent value="numbers" className="space-y-6">
             <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
-              <CardHeader>
+              <CardHeader className="px-2">
                 <CardTitle>Your Twilio Numbers</CardTitle>
                 <CardDescription className="text-gray-400 ">
                   Manage your AI-powered phone numbers
@@ -998,7 +1006,7 @@ export default function Dashboard() {
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
               <Card className="bg-[#0a0a0a]/60 border border-gray-800 text-white">
-                <CardHeader className="p-4">
+                <CardHeader className="px-2">
                   <CardTitle>Monthly Call Stats</CardTitle>
                   <CardDescription className="text-gray-400 ">
                     Track your call volume and lead generation

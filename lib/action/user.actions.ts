@@ -6,6 +6,9 @@ import User from "@/lib/database/models/user.model";
 import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
 import { UpdateUserType, CreateUserType } from "@/types/index";
+import QuestionTemplate from "../database/models/questionTemp.model";
+import UserStats from "../database/models/userStats.model";
+import Lead from "../database/models/lead.model";
 
 // CREATE
 export async function createUser(user: CreateUserType) {
@@ -133,3 +136,23 @@ export async function updateCredits(userDbId: string, creditFee: number) {
     handleError(error);
   }
 }
+// export async function seedDatabase() {
+//   try {
+//     await connectToDatabase();
+
+//     // Clear existing data
+
+//     // Insert dummy templates
+//     for (const template of dummyLeads) {
+//       const newTemplate = new Lead(template);
+//       await newTemplate.save();
+//       console.log(`Created template for user: ${template.userId}`);
+//     }
+
+//     console.log("Database seeded successfully!");
+//     process.exit(0);
+//   } catch (error) {
+//     console.error("Seeding failed:", error);
+//     process.exit(1);
+//   }
+// }

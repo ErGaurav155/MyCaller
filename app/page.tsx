@@ -11,6 +11,7 @@ import { AboutUs } from "@/components/shared/AboutUs";
 import Link from "next/link";
 import Feature from "@/components/shared/Feature";
 import ContactForm from "@/components/shared/ContactUs";
+import ChatbotLoader from "@/components/shared/ChatbotLoader";
 
 export default function HomePage() {
   return (
@@ -80,7 +81,7 @@ export default function HomePage() {
       <Testimonial />
       <AboutUs />
       <ContactForm />
-      <Chatbot />
+      <ChatbotLoader />
       <Footer />
     </div>
   );
